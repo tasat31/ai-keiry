@@ -1,6 +1,4 @@
-# Shipping Database
-
-source: https://www.equasis.org/
+# Ai-Keiry
 
 # 1. Deployment
 
@@ -49,30 +47,6 @@ access to http://127.0.0.1:8502
 
 The following command is useful for development.
 
-## 2-(1). playwright codegen for writing scraping scripts
-
-```
-$ playwright codegen https://www.equasis.org/
-```
-
-## 2-(2). Execute Robot
-
-```
-$ python3 robot.py scrape [imo_no]
-```
-
-```
-$ python3 robot.py scrape_batch_process
-```
-
-## 2-(3). Execute luigi task from command line
-
-```
-$ luigi --module app.tasks.scrape_equasis ScrapeEquasisTask --imo-no=8300614 --local-scheduler
-```
-
-## 2-(4). Execute sqlite_web
-
 ```
 sqlite_web shipping.db
 ```
@@ -116,24 +90,3 @@ modify `app.py`
 
 $ pyinstaller app.spec --clean
 
-
-# 4. Run schedule batch proccess from python interpreter
-
-## 4-(1) example
-
-```
-$ python3
-Python 3.12.0 (main, Nov 29 2023, 03:23:09) [GCC 12.2.0] on linux
-Type "help", "copyright", "credits" or "license" for more information.
->>> from schedules.scrape_equasis_job import ScrapeEquasisJob
->>> job = ScrapeEquasisJob(name='scrape_equasis_job')
->>> job.execute_job('19:00')
-
-```
-
-### Vessel Finderの実行手順
-
-```
-$ python3 robot.py vessel_finder_batch_process &
-$ streamlit run dashboard_vessel_finder.py
-```
