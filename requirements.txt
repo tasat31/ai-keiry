@@ -1,0 +1,23 @@
+pydantic
+python-dotenv
+dill
+
+# Streamlit
+altair
+pandas
+streamlit
+streamlit-modal
+streamlit-mermaid
+streamlit-authenticator
+st-pages
+
+# Database
+SQLAlchemy
+alembic
+sqlite-web
+
+# luigi
+luigi
+schedule
+pytz
+tzlocal

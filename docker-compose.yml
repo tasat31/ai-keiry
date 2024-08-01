@@ -1,0 +1,24 @@
+version: "3.8"
+
+volumes:
+  ai-keiry-sqlite3-db:
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ai-keiry
+    container_name: ai-keiry
+    tty: true
+    ports:
+      - "8501:8501"
+      - "8080:8080"
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - ai-keiry-sqlite3-db:/var/lib/sqlite3
+    environment:
+      - DISPLAY=$DISPLAY
+      - TZ=Asia/Tokyo
+    network_mode: "host"

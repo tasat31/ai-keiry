@@ -1,0 +1,3 @@
+from app.exceptions.equasis_authentication_rejected import EquasisAuthenticationRejected
+from app.exceptions.scraping_classification_timeout import ScrapingClassificationTimeout
+from app.exceptions.scraping_equasis_timeout import ScrapingEquasisTimeout
