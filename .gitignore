@@ -36,8 +36,5 @@ dist/
 
 venv/
 
-app.spec
-app.py
-
 .streamlit/secrets.toml
 .streamlit/credentials.yaml

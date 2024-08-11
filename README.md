@@ -37,10 +37,10 @@ $ alembic revision --autogenerate -m "Some comment"
 ## 1-(4). Execute streamlit
 
 ```
-$ streamlit run app/dashboard.py
+$ streamlit run main.py
 ```
 
-access to http://127.0.0.1:8502
+access to http://127.0.0.1:8501
 
 
 # 2. Development
@@ -48,45 +48,6 @@ access to http://127.0.0.1:8502
 The following command is useful for development.
 
 ```
-sqlite_web shipping.db
+sqlite_web keiry.db
 ```
-
-# 3. Make exe files
-
-You make exec files in the target host machine.(Windows, Linux supported)
-
-## 3-(1) requirement
-
-You need to set up virtualenv in the target host machine.
-
-```
-python3 and virtualenv
-```
-
-
-## 3-(2) Edit app.spec
-
-* Choose your target environment
-
-```
-$ cp app.spec.linux app.spec
-$ cp app.spec.windows10 app.spec
-$ cp app.spec.windows11 app.spec
-```
-
-## 3-(2) Edit app.py
-
-```
-$ cp app.py.example app.py
-```
-
-modify `app.py`
-
-```
-"./dashboard.py" -> "/home/your/path/shipping-db/dashboard.py"
-```
-
-## 3-(3) Run Command
-
-$ pyinstaller app.spec --clean
 
