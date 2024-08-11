@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import datetime
+import calendar
 from services.journals import list
 
 """
@@ -26,10 +27,12 @@ debit_options = []
 col11, col12, col13, col14 = st.columns(4)
 
 with col11:
-    entried_at_from = st.date_input("計上日カラ", datetime.date.today())
+    entried_at_from = st.date_input("計上日カラ", value=datetime.date.today().replace(day=1))
 
 with col12:
-    entried_at_to = st.date_input("計上日マデ", datetime.date.today())
+    current_date =  datetime.date.today()
+    last_day = calendar.monthrange(current_date.year, current_date.month)[1]
+    entried_at_to = st.date_input("計上日マデ", value=current_date.replace(day=last_day))
 
 with col13:
     credit_selected = st.selectbox(

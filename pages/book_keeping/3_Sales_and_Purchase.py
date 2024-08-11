@@ -11,7 +11,7 @@ from services.journals import entry
 
 """
 
-sales_tab, purchase_tab, projects_tab = st.tabs(["売上", "仕入れ", "プロジェクト一覧",])
+sales_tab, purchase_tab = st.tabs(["売上", "仕入れ"])
 
 with sales_tab:
     sales_segment = st.selectbox(
@@ -47,9 +47,9 @@ with sales_tab:
         key="paid"
     )
 
-    sales_partner = st.text_input("取引先")
+    sales_partner = st.text_input("取引先", key="sales-partner")
 
-    sales_remark = st.text_input("備考")
+    sales_remark = st.text_input("備考", key="sales-remark")
 
     if st.button("売上高記帳", type="primary", key="booking-sales"):
         if sales_paid == "現金":
@@ -160,39 +160,6 @@ with purchase_tab:
             st.toast('記帳しました')
         except Exception as e:
             st.toast(e)
-
-with projects_tab:
-    modal = Modal(
-        "プロジェクト追加", 
-        key="add-project",
-    
-        # Optional
-        padding=20,    # default value
-        max_width=744  # default value
-    )
-
-    open_modal = st.button("プロジェクト追加")
-    if open_modal:
-        modal.open()
-
-    if modal.is_open():
-        with modal.container():
-            segment =  st.selectbox(
-                label="セグメント",
-                options=options.segments,
-                key="segment"
-            )
-
-            title = st.text_input("タイトル")
-
-            description = st.text_input("説明")
-
-            loanched_at = st.date_input("開始日", datetime.date.today())
-
-            partner = st.text_input("取引先")
-
-            if st.button("追加"):
-                modal.close()
 
 # style
 st.markdown("""

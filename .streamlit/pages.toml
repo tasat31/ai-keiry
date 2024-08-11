@@ -1,0 +1,27 @@
+# [[pages]]
+# path = "dashboard.py"
+# name = "dashboard"
+
+# [[pages]]
+# path = "pages/book_keeping/1_Journals.py"
+# name = "Book Keeping"
+# icon = ":books:"
+
+# [[pages]]
+# path = "pages/book_keeping/2_Expense.py"
+# name = "- 販管理費及び一般管理費"
+
+
+#        Page("dashboard.py", "dashboard"),
+#        Page("pages/book_keeping/1_Journals.py", "Book Keeping", icon=":books:"),
+#        Page("pages/book_keeping/2_Expense.py", "- 販管理費及び一般管理費"),
+#        Page("pages/book_keeping/3_Sales_and_Purchase.py", "- 売上と仕入れ"),
+#        Page("pages/book_keeping/4_Fixed_Asset_List.py", "- 固定資産台帳"),
+#        Page("pages/book_keeping/5_Adjustment.py", "- 決算整理仕訳"),
+#        Page("pages/book_keeping/6_Trial_Balance.py", "- 合計残高試算表"),
+#        Page("pages/book_keeping/7_Statement.py", "- 決算書"),
+#        Page("pages/book_keeping/8_Cash_Flow.py", "- キャッシュフロー計算書"),
+#        Page("pages/book_keeping/9_Business_Plan.py", "- 事業計画"),
+#        Section(name="Marketing", icon=":bird:"),
+#        Section(name="CO2 emissions", icon=":pig:"),
+

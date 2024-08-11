@@ -7,9 +7,7 @@ altair
 pandas
 streamlit
 streamlit-modal
-streamlit-mermaid
 streamlit-authenticator
-st-pages
 
 # Database
 SQLAlchemy
@@ -21,3 +19,6 @@ luigi
 schedule
 pytz
 tzlocal
+
+pypdf
+reportlab
