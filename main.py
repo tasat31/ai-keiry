@@ -4,10 +4,6 @@ import pandas as pd
 import yaml
 from yaml.loader import SafeLoader
 
-"""
-### AI-keiry
-"""
-
 with open('.streamlit/credentials.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
@@ -41,8 +37,6 @@ if st.session_state['authentication_status'] is True:
         ],
         "Accounting": [
             st.Page("pages/book_keeping/1_Journals.py", title="仕訳と元帳", icon=":material/add_circle:"),
-            st.Page("pages/book_keeping/2_Expense.py", title="販管理費及び一般管理費", icon=":material/add_circle:"),
-            st.Page("pages/book_keeping/3_Sales_and_Purchase.py", title="売上と仕入れ", icon=":material/add_circle:"),
             st.Page("pages/book_keeping/4_Fixed_Asset_List.py", title="固定資産台帳", icon=":material/add_circle:"),
             st.Page("pages/book_keeping/5_Adjustment.py", title="決算整理仕訳", icon=":material/add_circle:"),
             st.Page("pages/book_keeping/6_Trial_Balance.py", title="合計残高試算表", icon=":material/add_circle:"),
