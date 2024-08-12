@@ -99,7 +99,16 @@ if modal.is_open():
 
 for lead in list():
     leads.append({
+        "id": lead.id,
         "名称": lead.name,
+        "セグメント":  lead.segment,
+        "クラスター":  lead.cluster,
+        "取引状況": lead.trade_status,
+        "ランク":  lead.rank,
+        "初回コンタクト日":  lead.first_contacted_at.strftime('%Y-%m-%d') if lead.first_contacted_at is not None else '',
+        "初回コンタクト手段":  lead.first_contacted_media,
+        "直近のコンタクト日":  lead.last_contacted_at.strftime('%Y-%m-%d') if lead.last_contacted_at is not None else '',
+        "説明":  lead.description,
         "法人/個人": lead.entity,
         "郵便番号": lead.postal_no,
         "都道府県": lead.prefecture,
@@ -107,25 +116,23 @@ for lead in list():
         "番地・建物等": lead.address,
         "URL": lead.url,
         "TEL":  lead.tel,
-        "セグメント":  lead.segment,
-        "クラスター":  lead.cluster,
-        "取引状況": lead.trade_status,
-        "ランク":  lead.rank,
-        "初回コンタクト日":  lead.first_contacted_at,
-        "初回コンタクト手段":  lead.first_contacted_media,
-        "直近のコンタクト日":  lead.last_contacted_at,
-        "説明":  lead.description,
         "担当者氏名":  lead.partner_name,
         "担当者部署・役職":  lead.partner_role,
         "担当者・電話番号1":  lead.partner_tel_1,
         "担当者・電話番号2":  lead.partner_tel_2,
-        "担当者・メールアドレス":  lead.partner_mail_addres,
+        "担当者・メールアドレス":  lead.partner_mail_address,
     })
 
 st.dataframe(
     pd.DataFrame(leads),
     width=800,
     height=600,
+    column_config={
+        "URL": st.column_config.LinkColumn(
+            validate="^http",
+            max_chars=256,
+        ),
+    },
     hide_index=True,
 )
 

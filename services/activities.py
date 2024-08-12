@@ -57,6 +57,7 @@ def list():
                 created_at,
                 updated_at
              FROM activities
+             ORDER BY scope_category
         """
 
     logger.debug(sql)
@@ -89,7 +90,7 @@ def entry(
         return
 
     sql = """
-        INSERT INTO leads(
+        INSERT INTO activities(
             name,
             emission_source,
             unit,
@@ -104,6 +105,7 @@ def entry(
             '%s',
             '%s',
             %s,
+            '%s',
             '%s',
             '%s',
             '%s',
