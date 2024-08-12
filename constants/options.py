@@ -45,10 +45,10 @@ lead_trade_status = (
 
 lead_ranks = (
     "A:お取引中",
-    "B:見積り検討中",
+    "B:見積り提示",
     "C:商談中",
     "D:名刺交換等",
-    "E:コンタクト未",
+    "E:To Do",
 )
 
 lead_contacted_media = (
