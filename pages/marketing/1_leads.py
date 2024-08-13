@@ -4,7 +4,7 @@ from streamlit_modal import Modal
 import pandas as pd
 from constants import options
 from app.types.lead import Lead
-from services.leads import list, entry
+from services.leads import list, entry, cluster_options
 
 """
 ### 見込み客リスト
@@ -97,12 +97,39 @@ if modal.is_open():
             modal.close()
 
 
-for lead in list():
+col1, col2, col3, col4 = st.columns([0.20, 0.30, 0.25, 0.25])
+
+with col1:
+    segment_selected = st.selectbox(
+        label="セグメント",
+        options=options.segments,
+        key="senario-segments",
+        index=None
+    )
+
+with col2:
+    cluster_selected = st.selectbox(
+        label="クラスター",
+        options=cluster_options(),
+        key="senario-clusters",
+        index=None
+    )
+
+with col3:
+    pass
+
+with col4:
+    pass
+
+for lead in list(
+    segment=segment_selected,
+    cluster=cluster_selected,
+):
     leads.append({
         "id": lead.id,
         "名称": lead.name,
-        "セグメント":  lead.segment,
-        "クラスター":  lead.cluster,
+        "セグメント": lead.segment,
+        "クラスター": lead.cluster,
         "取引状況": lead.trade_status,
         "ランク":  lead.rank,
         "初回コンタクト日":  lead.first_contacted_at.strftime('%Y-%m-%d') if lead.first_contacted_at is not None else '',

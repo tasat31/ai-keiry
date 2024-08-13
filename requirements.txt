@@ -20,5 +20,4 @@ schedule
 pytz
 tzlocal
 
-pypdf
-reportlab
+markdown-pdf

@@ -41,7 +41,6 @@ if st.session_state['authentication_status'] is True:
             st.Page("pages/book_keeping/5_Adjustment.py", title="決算整理仕訳", icon=":material/add_circle:"),
             st.Page("pages/book_keeping/6_Trial_Balance.py", title="合計残高試算表", icon=":material/add_circle:"),
             st.Page("pages/book_keeping/7_Statement.py", title="財務諸表", icon=":material/add_circle:"),
-            st.Page("pages/book_keeping/8_Cash_Flow.py", title="キャッシュフロー計算書", icon=":material/add_circle:"),
         ],
         "Emissions":[
             st.Page("pages/emissions/1_activity_list.py", title="排出源と係数の設定", icon=":material/add_circle:"),

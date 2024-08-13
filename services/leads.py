@@ -71,7 +71,29 @@ def find(id=None):
         updated_at=data[23],
     )
 
-def list():
+def list(segment=None, cluster=None, last_contacted_at_from=None, last_contacted_at_to=None):
+    where = ''
+
+    if segment is not None:
+        where = "segment = '%s'" % segment
+
+    if cluster is not None:
+        cluster_condition = "cluster = '%s'" % cluster
+        if where != '':
+            where = where + " AND %s" % cluster_condition
+        else:
+            where = cluster_condition
+
+    if last_contacted_at_from is not None and last_contacted_at_to is not None:
+        last_contacted_at_condition = "last_contacted_at BETWEEN '%s' AND '%s'" % (last_contacted_at_from.strftime('%Y-%m-%d'), last_contacted_at_to.strftime('%Y-%m-%d'))
+        if where != '':
+            where = where + " AND %s" % last_contacted_at_condition
+        else:
+            where = last_contacted_at_condition
+
+    if where != '':
+        where = "WHERE %s" % where
+
     sql = """
             SELECT
                 id,
@@ -99,7 +121,8 @@ def list():
                 created_at,
                 updated_at
              FROM leads
-        """
+             %s
+        """ % where
 
     logger.debug(sql)
     res = db_read(sql)
@@ -118,7 +141,7 @@ def list():
                 url=data[7],
                 tel=data[8],
                 segment=data[9],
-                clusterr=data[10],
+                cluster=data[10],
                 trade_status=data[11],
                 rank=data[12],
                 first_contacted_at=data[13],
@@ -269,3 +292,42 @@ def bulk_entry(csv_records: List):
         return {"message": "Uploaded successfully."}
     except Exception as e:
         return {"message": f"Error: {e}"}
+
+def lead_options():
+    sql = """
+            SELECT
+                name,
+                entity,
+                updated_at
+             FROM leads
+             GROUP BY name, entity, updated_at
+             ORDER BY updated_at
+        """
+
+    logger.debug(sql)
+    res = db_read(sql)
+
+    lead_options = []
+    for data in res.fetchall():
+        lead_options.append(
+            data[0] + (" 御中" if data[1] == "法人" else " 様")
+        )
+
+    return lead_options
+
+def cluster_options():
+    sql = """
+            SELECT
+                cluster
+             FROM leads
+             GROUP BY cluster
+        """
+
+    logger.debug(sql)
+    res = db_read(sql)
+
+    cluster_options = []
+    for data in res.fetchall():
+        cluster_options.append(data[0])
+
+    return cluster_options

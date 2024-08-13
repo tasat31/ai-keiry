@@ -61,7 +61,7 @@ for activity in list():
         "活動名称": activity.name,
         "排出源": activity.emission_source,
         "単位": activity.unit,
-        "単位あたりのtCo2": str(activity.emission_factor),
+        "単位あたりのtCo2": activity.emission_factor,
         "スコープ・カテゴリ": activity.scope_category,
         "排出係数の根拠": activity.basis_of_emission_factor,
         "説明": activity.description,
@@ -72,6 +72,9 @@ st.dataframe(
     width=800,
     height=600,
     column_config={
+        "単位あたりのtCo2": st.column_config.NumberColumn(
+            format="%.6f"
+        ),
         "排出係数の根拠": st.column_config.LinkColumn(
             validate="^http",
             max_chars=256,

@@ -306,8 +306,8 @@ for journal in list(
     journals.append({
         "日付": journal.entried_at.strftime('%Y-%m-%d'),
         "摘要": journal.summary,
-        "支出": journal.cash_out,
-        "収入": journal.cash_in,
+        "現金支出": journal.cash_out,
+        "現金収入": journal.cash_in,
         "借方": journal.credit,
         "貸方": journal.debit,
         "金額(税抜)": journal.amount,
@@ -340,9 +340,9 @@ for journal in list(
 journals_summary.append({
     # "日付": "合計",
     "期間(件数)": "%s 〜 %s (%s 件)" % (entried_at_from.strftime('%Y-%m-%d'), entried_at_to.strftime('%Y-%m-%d'), str(count)),
-    "支出": total_cash_out,
-    "収入": total_cash_in,
-    "収入 - 支出": total_cash_in - total_cash_out,
+    "現金支出": total_cash_out,
+    "現金収入": total_cash_in,
+    "現金収入-支出": total_cash_in - total_cash_out,
     # "借方": "",
     # "貸方": "",
     # "金額(税抜)": total_ammount,
