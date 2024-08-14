@@ -64,6 +64,12 @@ quatation_conditions = (
     "官公庁への代行手続きは含んでおりません",
 )
 
+project_status = (
+    "計画中",
+    "契約中",
+    "完了",
+)
+
 # accounting
 cost_types = (
     "消耗工具器具備品費",
