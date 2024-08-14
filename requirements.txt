@@ -20,4 +20,4 @@ schedule
 pytz
 tzlocal
 
-markdown-pdf
+xhtml2pdf
