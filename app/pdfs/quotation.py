@@ -3,7 +3,10 @@ from app.types.quotation import Quotation
 from xhtml2pdf import pisa
 
 def currency_format(x):
-    return "{:>10,d}".format(x)
+    return "{:,d}".format(x)
+
+def currency_format_html(x):
+    return '<div style="text-align: right; margin-right: 5px">%s</div>' % "{:,d}".format(x)
 
 def other_quotation_condition_html(conditions=[]):
     condition_list_html = ''
@@ -38,9 +41,9 @@ def generate_quotation(
 <head>
     <style>
         body { font-family: HeiseiMin-W3; line-height: 10px; font-size: 16px;}
-        .dataframe { padding-top: 3px; padding-bottom: 1px; font-size: 16px;}
+        .dataframe { padding-top: 3px; padding-bottom: 1px; font-size: 16px; text-indent: 5px; }
         .quotation-details > td:nth-child(1) { text-align: right; }
-        .subtotal { padding-top: 3px; padding-bottom: 1px; font-size: 16px;}
+        .subtotal { padding-top: 3px; padding-bottom: 1px; font-size: 16px; text-indent: 5px; }
     </style>
 </head>
 <body>
@@ -117,20 +120,21 @@ def generate_quotation(
             col_space=[400, 100, 40, 40, 100, 100],
             justify=None,
             formatters={
-                '単価': currency_format,
-                '数量': currency_format,
-                '金額': currency_format
+                '単価': currency_format_html,
+                '数量': currency_format_html,
+                '金額': currency_format_html,
             },
             classes=['quotation-details'],
             index=False,
-            border=0.1
+            border=0.1,
+            escape=False,
         ).replace('min-', ''),
         other_quotation_condition_html(quotation.other_conditions),
-        currency_format(subtotal_amount),
-        currency_format(subtotal_tax10),
-        currency_format(subtotal_tax08),
-        currency_format(subtotal_tax00),
-        currency_format(total_amount),
+        '<div style="text-align: right; margin-right: 5px;">%s</div>' % currency_format(subtotal_amount),
+        '<div style="text-align: right; margin-right: 5px;">%s</div>' % currency_format(subtotal_tax10),
+        '<div style="text-align: right; margin-right: 5px;">%s</div>' % currency_format(subtotal_tax08),
+        '<div style="text-align: right; margin-right: 5px;">%s</div>' % currency_format(subtotal_tax00),
+        '<div style="text-align: right; margin-right: 5px;">%s</div>' % currency_format(total_amount),
         quotation.remark
     )
 

@@ -15,11 +15,10 @@ from app.pdfs.quotation import generate_quotation
 quoatation_details = [
     {
         "項目": "",
-        "単価": None,
-        "数量": None,
+        "単価": 0,
+        "数量": 0,
         "単位": "",
         "税率": 0.1,
-        "備考": "",
     },
 ]
 
@@ -138,7 +137,7 @@ quotation_other_conditions = st.multiselect(
     placeholder="選択して下さい",
 )
 
-quotation_remark =  st.text_area(label="備考")
+quotation_remark = st.text_area(label="備考")
 
 if st.button("見積書PDF作成"):
     try:
