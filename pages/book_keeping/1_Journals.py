@@ -5,9 +5,15 @@ import datetime
 import calendar
 from constants import options, segments
 from app.types.journal import Journal
-from services.journals import entry
-from services.journals import list
+from services.journals import entry, list, credit_options, debit_options
 
+@st.cache_data
+def credit_options_cached():
+    return credit_options()
+
+@st.cache_data
+def debit_options_cached():
+    return debit_options()
 
 expense_modal = Modal(
     ":pencil: 販管費及び一般管理費を記帳", 
@@ -52,7 +58,6 @@ if expense_modal.is_open():
         expense_remark = st.text_input("備考", key="expense-remark")
         
         if st.button("記帳", type="primary", key="entry-expense-button"):
-            expense_modal.close()
             if expense_paid == "現金":
                 expense_debit = "現金及び預金"
                 expense_cash_out = int(expense_amount_inc_tax)
@@ -84,6 +89,7 @@ if expense_modal.is_open():
                     month=expense_entried_at.strftime('%Y%m'),
                     closed=True
                 ))
+                expense_modal.close()
                 st.toast('販売費及び一般管理費を記帳しました')
             except Exception as e:
                 st.toast(e)
@@ -132,7 +138,6 @@ if sales_and_purchase_modal.is_open():
         sales_remark = st.text_input("備考", key="sales-remark")
 
         if st.button("売上高記帳", type="primary", key="booking-sales"):
-            sales_and_purchase_modal.close()
             if sales_paid == "現金":
                 sales_credit = "現金及び預金"
                 sales_cash_in = int(sales_amount_inc_tax)
@@ -164,6 +169,7 @@ if sales_and_purchase_modal.is_open():
                     month=sales_entried_at.strftime('%Y%m'),
                     closed=True
                 ))
+                sales_and_purchase_modal.close()
                 st.toast('売上高を記帳しました')
             except Exception as e:
                 st.toast(e)
@@ -260,8 +266,6 @@ total_tax_out = 0
 entried_at_from = None
 entried_at_to = None
 count = 0
-credit_options = []
-debit_options = []
 
 col11, col12, col13, col14 = st.columns(4)
 
@@ -276,14 +280,14 @@ with col12:
 with col13:
     credit_selected = st.selectbox(
         label="借方",
-        options=['ALL'] + credit_options,
+        options=['ALL'] + credit_options_cached(),
         key="credit"
     )
 
 with col14:
     debit_selected = st.selectbox(
         label="貸方",
-        options=['ALL'] + debit_options,
+        options=['ALL'] + debit_options_cached(),
         key="debit"
     )
 

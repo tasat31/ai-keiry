@@ -269,6 +269,42 @@ def bulk_entry(csv_records: List):
     except Exception as e:
         return {"message": f"Error: {e}"}
 
+def credit_options():
+    sql = """
+            SELECT
+                credit
+             FROM journals
+             GROUP BY credit
+             ORDER BY credit
+        """
+
+    logger.debug(sql)
+    res = db_read(sql)
+
+    credit_options = []
+    for data in res.fetchall():
+        credit_options.append(data[0])
+
+    return credit_options
+
+def debit_options():
+    sql = """
+            SELECT
+                debit
+             FROM journals
+             GROUP BY debit
+             ORDER BY debit
+        """
+
+    logger.debug(sql)
+    res = db_read(sql)
+
+    debit_options = []
+    for data in res.fetchall():
+        debit_options.append(data[0])
+
+    return debit_options
+
 def list_by_promotion(entried_at_from=None, entried_at_to=None):
 
     condition = ''
@@ -305,6 +341,77 @@ def list_by_promotion(entried_at_from=None, entried_at_to=None):
              FROM journals
              %s
              ORDER BY entried_at, credit, cost_type
+        """ % condition
+
+    logger.debug(sql)
+    res = db_read(sql)
+
+    journals = []
+    for data in res.fetchall():
+        journals.append(
+            Journal(
+                id=data[0],
+                entried_at=data[1],
+                credit=data[2],
+                debit=data[3],
+                amount=data[4],
+                tax_rate=data[5],
+                tax=data[6],
+                summary=data[7],
+                remark=data[8],
+                partner=data[9],
+                cash_in=data[10],
+                cash_out=data[11],
+                tax_in=data[12],
+                tax_out=data[13],
+                cost_type=data[14],
+                segment=data[15],
+                project_code=data[16],
+                fiscal_term=data[17],
+                month=data[18],
+                closed=data[19],
+                created_at=data[20],
+                updated_at=data[21],
+            )
+        )
+
+    return journals
+
+def list_by_project(entried_at_from=None, entried_at_to=None):
+
+    condition = ''
+    if (entried_at_from is not None) and (entried_at_to is not None):
+        condition = "WHERE entried_at BETWEEN '%s' AND '%s'" % (entried_at_from.strftime('%Y-%m-%d'), entried_at_to.strftime('%Y-%m-%d'))
+        condition = condition + " AND credit = '売上原価'"
+        condition = condition + " AND closed = True"
+
+    sql = """
+            SELECT
+                id,
+                entried_at,
+                credit,
+                debit,
+                amount,
+                tax_rate,
+                tax,
+                summary,
+                remark,
+                partner,
+                cash_in,
+                cash_out,
+                tax_in,
+                tax_out,
+                cost_type,
+                segment,
+                project_code,
+                fiscal_term,
+                month,
+                closed,
+                created_at,
+                updated_at
+             FROM journals
+             %s
+             ORDER BY entried_at
         """ % condition
 
     logger.debug(sql)
