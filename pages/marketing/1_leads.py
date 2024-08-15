@@ -4,7 +4,7 @@ from streamlit_modal import Modal
 import pandas as pd
 from constants import options
 from app.types.lead import Lead
-from services.leads import list, entry, cluster_options
+from services.leads import list, entry, cluster_options, bulk_entry
 
 """
 ### 見込み客リスト
@@ -162,6 +162,17 @@ st.dataframe(
     },
     hide_index=True,
 )
+
+st.caption("見込み客CSVアップロード")
+uploaded_file = st.file_uploader(
+    "Choose a CSV file", accept_multiple_files=False
+)
+
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    res = bulk_entry(df)
+
+    st.toast(res["message"])
 
 # style
 st.markdown("""

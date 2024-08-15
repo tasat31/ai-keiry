@@ -1,3 +1,4 @@
+import pandas as pd
 from datetime import datetime
 from settings import logger
 from resources.keiry_db import db_read, db_write
@@ -259,33 +260,34 @@ def delete(id=None):
     logger.debug(sql)
     db_write(sql)
 
-def bulk_entry(csv_records: List):
+def bulk_entry(df: pd.DataFrame):
     try:
-        for csv_rec in csv_records:
+        csv_records = df.to_csv().split('\n')
+        for csv_rec in csv_records[1:]:
             data = csv_rec.split(',')
-            if len(data) >= 20:
+            if len(data) >= 22:
                 lead = Lead(
-                    name=data[0],
-                    entity=data[1],
-                    postal_no=data[2],
-                    prefecture=data[3],
-                    city=data[4],
-                    address=data[5],
-                    url=data[6],
-                    tel=data[7],
-                    segment=data[8],
-                    clusterr=data[9],
-                    trade_status=data[10],
-                    rank=data[11],
-                    first_contacted_at=data[12],
-                    first_contacted_media=data[13],
-                    last_contacted_at=data[14],
-                    description=data[15],
-                    partner_name=data[16],
-                    partner_role=data[17],
-                    partner_tel_1=data[18],
-                    partner_tel_2=data[19],
-                    partner_mail_address=data[20],
+                    name=data[2],
+                    segment=data[3],
+                    cluster=data[4],
+                    trade_status=data[5],
+                    rank=data[6],
+                    first_contacted_at=datetime.strptime(data[7], '%Y-%m-%d'),
+                    first_contacted_media=data[8],
+                    last_contacted_at=datetime.strptime(data[9], '%Y-%m-%d'),
+                    description=data[10],
+                    entity=data[11],
+                    postal_no=data[12],
+                    prefecture=data[13],
+                    city=data[14],
+                    address=data[15],
+                    url=data[16],
+                    tel=data[17],
+                    partner_name=data[18],
+                    partner_role=data[19],
+                    partner_tel_1=data[20],
+                    partner_tel_2=data[21],
+                    partner_mail_address=data[22],
                 )
 
                 entry(lead=lead)
