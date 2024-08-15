@@ -80,7 +80,7 @@ edited_activities_by_promotion = st.data_editor(
 """
 ##### 排出量の算定
 """
-if len(edited_activities_by_promotion.query('check == True')) != 0:
+if len(edited_activities_by_promotion) != 0 and len(edited_activities_by_promotion.query('check == True')) != 0:
     checked_edited_activities_by_promotion = edited_activities_by_promotion.query('check == True')
 
     checked_edited_activities_by_promotion["活動名称"] = checked_edited_activities_by_promotion["活動内容"].apply(lambda s: s.split(',')[0] if s is not None else None)
