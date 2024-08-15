@@ -268,3 +268,75 @@ def bulk_entry(csv_records: List):
         return {"message": "Uploaded successfully."}
     except Exception as e:
         return {"message": f"Error: {e}"}
+
+def list_by_promotion(entried_at_from=None, entried_at_to=None):
+
+    condition = ''
+    if (entried_at_from is not None) and (entried_at_to is not None):
+        condition = "WHERE entried_at BETWEEN '%s' AND '%s'" % (entried_at_from.strftime('%Y-%m-%d'), entried_at_to.strftime('%Y-%m-%d'))
+        condition = condition + " AND credit = '販売費及び一般管理費'"
+        condition = condition + " AND cost_type IN ('荷造費', '運搬費', '広告宣伝費', '見本費', '外注費', '旅費交通費', '通勤費', '通信費', '水道光熱費', '事務用消耗品費', '消耗工具器具備品費', '修繕費', '賃借料')"
+        condition = condition + " AND closed = True"
+
+    sql = """
+            SELECT
+                id,
+                entried_at,
+                credit,
+                debit,
+                amount,
+                tax_rate,
+                tax,
+                summary,
+                remark,
+                partner,
+                cash_in,
+                cash_out,
+                tax_in,
+                tax_out,
+                cost_type,
+                segment,
+                project_code,
+                fiscal_term,
+                month,
+                closed,
+                created_at,
+                updated_at
+             FROM journals
+             %s
+             ORDER BY entried_at, credit, cost_type
+        """ % condition
+
+    logger.debug(sql)
+    res = db_read(sql)
+
+    journals = []
+    for data in res.fetchall():
+        journals.append(
+            Journal(
+                id=data[0],
+                entried_at=data[1],
+                credit=data[2],
+                debit=data[3],
+                amount=data[4],
+                tax_rate=data[5],
+                tax=data[6],
+                summary=data[7],
+                remark=data[8],
+                partner=data[9],
+                cash_in=data[10],
+                cash_out=data[11],
+                tax_in=data[12],
+                tax_out=data[13],
+                cost_type=data[14],
+                segment=data[15],
+                project_code=data[16],
+                fiscal_term=data[17],
+                month=data[18],
+                closed=data[19],
+                created_at=data[20],
+                updated_at=data[21],
+            )
+        )
+
+    return journals

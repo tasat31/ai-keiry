@@ -10,9 +10,10 @@ class Emissions(Base, TimestampMixin):
     id = Column(Integer, primary_key=True, autoincrement=True)
     journal_id = Column(Integer, nullable=False)
     activity_id = Column(Integer, nullable=False)
-    emission_factor = Column(Double, nullable=False)
+    activity = Column(Double, nullable=False)
     formula = Column(String, nullable=False)
-    emissions = Column(Double, nullable=False)
+    emission = Column(Double, nullable=False)
+    aggregation_key = Column(String, nullable=False)
 
     def __repr__(self) -> str:
         return f"Emission(id={self.id!r})"
