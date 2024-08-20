@@ -21,3 +21,4 @@ pytz
 tzlocal
 
 xhtml2pdf
+plotly==5.23.0
