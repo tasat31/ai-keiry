@@ -92,8 +92,7 @@ if expense_modal.is_open():
                 expense_modal.close()
                 st.toast('販売費及び一般管理費を記帳しました')
             except Exception as e:
-                st.toast(e)
-                expense_modal.close()
+                st.write(e)
 
 if sales_and_purchase_modal.is_open():
     with sales_and_purchase_modal.container():
@@ -172,7 +171,7 @@ if sales_and_purchase_modal.is_open():
                 sales_and_purchase_modal.close()
                 st.toast('売上高を記帳しました')
             except Exception as e:
-                st.toast(e)
+                st.write(e)
 
     with purchase_tab:
         purchase_segment = st.selectbox(
