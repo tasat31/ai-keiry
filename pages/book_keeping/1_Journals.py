@@ -85,7 +85,7 @@ if expense_modal.is_open():
                     cost_type=expense_cost_type,
                     segment=segments.segments["others"],
                     project_code="",
-                    fiscal_term="2025年6月期",
+                    fiscal_term=st.session_state['fiscal_term'],
                     month=expense_entried_at.strftime('%Y%m'),
                     closed=True
                 ))
@@ -164,7 +164,7 @@ if sales_and_purchase_modal.is_open():
                     cost_type="",
                     segment=sales_segment,
                     project_code="",
-                    fiscal_term="2025年6月期",
+                    fiscal_term=st.session_state['fiscal_term'],
                     month=sales_entried_at.strftime('%Y%m'),
                     closed=True
                 ))
@@ -239,7 +239,7 @@ if sales_and_purchase_modal.is_open():
                     cost_type="",
                     segment=purchase_segment,
                     project_code="",
-                    fiscal_term="2025年6月期",
+                    fiscal_term=st.session_state['fiscal_term'],
                     month=purchase_entried_at.strftime('%Y%m'),
                     closed=True
                 ))
@@ -266,10 +266,12 @@ entried_at_from = None
 entried_at_to = None
 count = 0
 
+st.write("会計期間: %s - %s" % (st.session_state['fiscal_start_date'].strftime("%Y-%m-%d"), st.session_state['fiscal_end_date'].strftime("%Y-%m-%d")))
+
 col11, col12, col13, col14 = st.columns(4)
 
 with col11:
-    entried_at_from = st.date_input("計上日カラ", value=datetime.date.today().replace(day=1))
+    entried_at_from = st.date_input("計上日カラ", value=st.session_state['fiscal_start_date'])
 
 with col12:
     current_date =  datetime.date.today()

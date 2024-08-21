@@ -1,3 +1,4 @@
+-- ITEMS
 INSERT INTO ITEMS VALUES(1, '現金及び預金', '(1)流動資産', 'CA', 1, '2024-07-23', '2024-07-23');
 INSERT INTO ITEMS VALUES(2, '受取手形', '(1)流動資産', 'CA', 2, '2024-07-23', '2024-07-23');
 INSERT INTO ITEMS VALUES(3, '売掛金', '(1)流動資産', 'CA', 3, '2024-07-23', '2024-07-23');
@@ -42,3 +43,6 @@ INSERT INTO ITEMS VALUES(41, '受取利息', '(7)損益', 'PR', 41, '2024-07-23'
 INSERT INTO ITEMS VALUES(42, '支払利息', '(7)損益', 'LS', 42, '2024-07-23', '2024-07-23');
 INSERT INTO ITEMS VALUES(43, '雑収入', '(7)損益', 'PR', 43, '2024-07-23', '2024-07-23');
 INSERT INTO ITEMS VALUES(44, '法人税等', '(7)損益', 'LS', 44, '2024-07-23', '2024-07-23');
+
+-- KITTINGS
+INSERT INTO KITTINGS VALUES(1, 'fiscal_start_date', '2024-07-01', '2024-08-21', '2024-08-21');

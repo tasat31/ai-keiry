@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 """
 ### 固定資産台帳
 """
+st.write("会計期間: %s - %s" % (st.session_state['fiscal_start_date'].strftime("%Y-%m-%d"), st.session_state['fiscal_end_date'].strftime("%Y-%m-%d")))
 
 
 # style

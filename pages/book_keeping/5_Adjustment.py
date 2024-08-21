@@ -6,6 +6,7 @@ from services.journals import entry
 """
 ### 決算整理仕訳
 """
+st.write("会計期間: %s - %s" % (st.session_state['fiscal_start_date'].strftime("%Y-%m-%d"), st.session_state['fiscal_end_date'].strftime("%Y-%m-%d")))
 
 receivables_tab, debt_tab, allowance_tab, other_tab = st.tabs(["債権管理", "債務管理", "引当金", "その他",])
 
@@ -65,7 +66,7 @@ with other_tab:
                 cost_type="",
                 segment="",
                 project_code="",
-                fiscal_term="2025年6月期",
+                fiscal_term=st.session_state['fiscal_term'],
                 month=other_entried_at.strftime('%Y%m'),
                 closed=True
             ))

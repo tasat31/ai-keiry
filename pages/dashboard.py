@@ -10,11 +10,14 @@ def currency_format(x):
 ### ダッシュボード
 
 """
+
+st.write("会計期間: %s - %s" % (st.session_state['fiscal_start_date'].strftime("%Y-%m-%d"), st.session_state['fiscal_end_date'].strftime("%Y-%m-%d")))
+
 col1, col2, col3, col4 = st.columns(4)
 
 leads_count = leads()
-sales_amount = sales()
-expense_amount = expense()
+sales_amount = sales(entried_at_from=st.session_state['fiscal_start_date'], entried_at_to=st.session_state['fiscal_end_date'])
+expense_amount = expense(entried_at_from=st.session_state['fiscal_start_date'], entried_at_to=st.session_state['fiscal_end_date'])
 profit_amount = sales_amount - expense_amount
 
 with col1.container(height=160):

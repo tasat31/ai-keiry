@@ -4,19 +4,14 @@ from settings import logger
 from resources.keiry_db import db_read, db_write
 from typing import List
 
-def leads(entried_at_from=None, entried_at_to=None):
-
-    condition = ''
-    if (entried_at_from is not None) and (entried_at_to is not None):
-        condition = "WHERE entried_at BETWEEN '%s' AND '%s'" % (entried_at_from.strftime('%Y-%m-%d'), entried_at_to.strftime('%Y-%m-%d'))
+def leads():
 
     sql = """
             SELECT
                 count(1)
              FROM leads
              WHERE trade_status <> "削除"
-             %s
-        """ % condition
+        """
 
     logger.debug(sql)
     res = db_read(sql)
@@ -29,7 +24,7 @@ def sales(entried_at_from=None, entried_at_to=None):
 
     condition = ''
     if (entried_at_from is not None) and (entried_at_to is not None):
-        condition = "WHERE entried_at BETWEEN '%s' AND '%s'" % (entried_at_from.strftime('%Y-%m-%d'), entried_at_to.strftime('%Y-%m-%d'))
+        condition = "AND entried_at BETWEEN '%s' AND '%s'" % (entried_at_from.strftime('%Y-%m-%d'), entried_at_to.strftime('%Y-%m-%d'))
 
     sql = """
             SELECT
@@ -50,7 +45,7 @@ def expense(entried_at_from=None, entried_at_to=None):
 
     condition = ''
     if (entried_at_from is not None) and (entried_at_to is not None):
-        condition = "WHERE entried_at BETWEEN '%s' AND '%s'" % (entried_at_from.strftime('%Y-%m-%d'), entried_at_to.strftime('%Y-%m-%d'))
+        condition = "AND entried_at BETWEEN '%s' AND '%s'" % (entried_at_from.strftime('%Y-%m-%d'), entried_at_to.strftime('%Y-%m-%d'))
 
     sql = """
             SELECT

@@ -18,7 +18,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from models import Items, Journals, Projects, Leads, LeadComments, Activities, Emissions 
+from models import Items, Journals, Projects, Leads, LeadComments, Activities, Emissions, Kittings
 target_metadata = [
     Items.metadata,
     Journals.metadata,
@@ -27,6 +27,7 @@ target_metadata = [
     LeadComments.metadata,
     Activities.metadata,
     Emissions.metadata,
+    Kittings.metadata,
 ]
 
 # other values from the config, defined by the needs of env.py,

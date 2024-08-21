@@ -7,16 +7,17 @@ from services.trial_balance import output
 """
 ### 合計残高試算表
 """
+st.write("会計期間: %s - %s" % (st.session_state['fiscal_start_date'].strftime("%Y-%m-%d"), st.session_state['fiscal_end_date'].strftime("%Y-%m-%d")))
 
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    entried_at_from = st.date_input("計上日カラ",  value=datetime.date.today().replace(day=1))
+    entried_at_from = st.date_input("計上日カラ",  value=st.session_state['fiscal_start_date'])
 
 with col2:
     current_date =  datetime.date.today()
     last_day = calendar.monthrange(current_date.year, current_date.month)[1]
-    entried_at_to = st.date_input("計上日マデ", value=current_date.replace(day=last_day))
+    entried_at_to = st.date_input("計上日マデ", value=st.session_state['fiscal_end_date'])
 
 with col3:
     pass
