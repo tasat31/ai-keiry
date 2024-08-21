@@ -121,3 +121,57 @@ def sales_expense_leads_by_segment(entried_at_from=None, entried_at_to=None):
         })
 
     return pd.DataFrame(segment_data)
+
+def leads_by_rank():
+
+    sql = """
+            SELECT
+                rank,
+                count(1)
+             FROM leads
+             WHERE trade_status <> "削除"
+             GROUP BY rank
+        """
+
+    logger.debug(sql)
+    res = db_read(sql)
+
+    leads = []
+    for data in res.fetchall():
+        leads.append({
+            "ランク": data[0],
+            "見込み客数": data[1],
+        })
+
+    return pd.DataFrame(leads)
+
+def expense_by_cost_type(entried_at_from=None, entried_at_to=None):
+
+    condition = ''
+    if (entried_at_from is not None) and (entried_at_to is not None):
+        condition = "AND entried_at BETWEEN '%s' AND '%s'" % (entried_at_from.strftime('%Y-%m-%d'), entried_at_to.strftime('%Y-%m-%d'))
+
+    sql = """
+            SELECT
+                cost_type,
+                SUM(amount) as subtotal
+             FROM journals
+             WHERE credit = '販売費及び一般管理費' AND closed = True
+             %s
+            GROUP BY cost_type
+            ORDER BY SUM(amount) desc
+        """ % condition
+
+    logger.debug(sql)
+    res = db_read(sql)
+
+    labels_expenses_by_cost_type = []
+    values_expenses_by_cost_type = []
+    for data in res.fetchall():
+        labels_expenses_by_cost_type.append(data[0])
+        values_expenses_by_cost_type.append(data[1])
+
+    return {
+        "labels": labels_expenses_by_cost_type,
+        "values": values_expenses_by_cost_type
+    }
