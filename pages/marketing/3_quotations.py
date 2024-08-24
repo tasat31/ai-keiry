@@ -11,10 +11,9 @@ from services.quotation_templates import bulk_entry as quotation_template_bulk_e
 from app.types.quotation import Quotation
 from app.pdfs.quotation import generate_quotation
 
-@st.cache_data
-def init():
-    ss.quotation_template_title = None
+ss.quotation_template_title = None
 
+if 'quotation_details' not in ss:
     ss.quotation_details = [
         {
             "項目": "",
@@ -24,7 +23,6 @@ def init():
             "税率": 0.1,
         },
     ]
-
 
 modal = Modal(
     "見積りテンプレート保存",
@@ -52,7 +50,6 @@ if modal.is_open():
 """
 ### 見積書の作成
 """
-init()
 
 quotation_customer = st.selectbox(
     label="宛先",
