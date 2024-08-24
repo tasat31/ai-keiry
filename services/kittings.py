@@ -34,6 +34,6 @@ def fiscal_term_settings(fiscal_start_date=None):
 
     fiscal_end_date = datetime(last_date.year + 1, last_date.month, last_date.day)
  
-    fiscal_term = "%d年%d月期" % (fiscal_end_date.year, fiscal_end_date.month)
+    fiscal_term = fiscal_end_date.strftime('%Y年%m月期')
 
     return (fiscal_start_date, fiscal_end_date, fiscal_term)

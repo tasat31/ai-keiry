@@ -7,3 +7,4 @@ from models.activities import Activities
 from models.emissions import Emissions
 from models.kittings import Kittings
 from models.quotation_templates import QuotationTemplates
+from models.statements import Statements

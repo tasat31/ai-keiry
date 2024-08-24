@@ -7,6 +7,7 @@ class TrialBalance(BaseModel):
     display_seq: int
     name: str
     caption: str
+    balance_actual_last_fiscal_year: int
     credit_actual_total_amount: int
     debit_actual_total_amount: int
     balance_actual_amount: int
