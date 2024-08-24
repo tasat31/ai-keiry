@@ -3,10 +3,10 @@ from app.types.quotation import Quotation
 from xhtml2pdf import pisa
 
 def currency_format(x):
-    return "{:,d}".format(x)
+    return "{:,d}".format(int(x))
 
 def currency_format_html(x):
-    return '<div style="text-align: right; margin-right: 5px">%s</div>' % "{:,d}".format(x)
+    return '<div style="text-align: right; margin-right: 5px">%s</div>' % "{:,d}".format(int(x))
 
 def other_quotation_condition_html(conditions=[]):
     condition_list_html = ''
@@ -90,9 +90,6 @@ def generate_quotation(
             <td style="width: 180px">(消費税  8％)</td><td style="width: 100px">%s</td><td style="width: 100px"></td>
         </tr>
         <tr>
-            <td style="width: 180px">(非課税)</td><td style="width: 100px">%s</td><td style="width: 100px"></td>
-        </tr>
-        <tr>
             <td style="width: 180px">合計金額(税込)</td><td style="width: 100px">%s</td><td style="width: 100px"></td>
         </tr>
         </table>
@@ -133,7 +130,6 @@ def generate_quotation(
         '<div style="text-align: right; margin-right: 5px;">%s</div>' % currency_format(subtotal_amount),
         '<div style="text-align: right; margin-right: 5px;">%s</div>' % currency_format(subtotal_tax10),
         '<div style="text-align: right; margin-right: 5px;">%s</div>' % currency_format(subtotal_tax08),
-        '<div style="text-align: right; margin-right: 5px;">%s</div>' % currency_format(subtotal_tax00),
         '<div style="text-align: right; margin-right: 5px;">%s</div>' % currency_format(total_amount),
         quotation.remark
     )

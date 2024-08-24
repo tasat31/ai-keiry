@@ -6,3 +6,4 @@ from models.lead_comments import LeadComments
 from models.activities import Activities
 from models.emissions import Emissions
 from models.kittings import Kittings
+from models.quotation_templates import QuotationTemplates

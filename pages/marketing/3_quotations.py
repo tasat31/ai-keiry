@@ -5,22 +5,54 @@ from streamlit_modal import Modal
 import pandas as pd
 from constants import options
 from services.leads import lead_options
+from services.quotation_templates import quotation_template_options
+from services.quotation_templates import list as quotation_template_list
+from services.quotation_templates import bulk_entry as quotation_template_bulk_entry
 from app.types.quotation import Quotation
 from app.pdfs.quotation import generate_quotation
+
+@st.cache_data
+def init():
+    ss.quotation_template_title = None
+
+    ss.quotation_details = [
+        {
+            "項目": "",
+            "単価": 0,
+            "数量": 0,
+            "単位": "",
+            "税率": 0.1,
+        },
+    ]
+
+
+modal = Modal(
+    "見積りテンプレート保存",
+    key="add-quotation-template",
+
+    padding=20,
+    max_width=800,
+)
+
+if modal.is_open():
+    with modal.container():
+        ss.quotation_template_title = st.text_input("見積りテンプレートタイトル", key="quotation-template-title")
+
+        if st.button("保存"):
+            try:
+                df_quotation_templates =  pd.concat([pd.DataFrame({"タイトル": [ss.quotation_template_title] * len(ss.edited_quotation_details_df.index)}), ss.edited_quotation_details_df], axis=1)
+                quotation_template_bulk_entry(
+                    df_quotation_templates.to_csv().split('\n')
+                )
+                st.toast("見積りテンプレートとして保存しました")
+                modal.close()
+            except Exception as e:
+                st.write(e)
 
 """
 ### 見積書の作成
 """
-
-quoatation_details = [
-    {
-        "項目": "",
-        "単価": 0,
-        "数量": 0,
-        "単位": "",
-        "税率": 0.1,
-    },
-]
+init()
 
 quotation_customer = st.selectbox(
     label="宛先",
@@ -33,13 +65,48 @@ quotation_customer = st.selectbox(
 
 quotation_title = st.text_input(label="件名")
 
-quotation_template = st.selectbox(
+ss.quotation_template_title = st.selectbox(
     label="見積りテンプレート選択",
-    options=('コミュニティFM局', '1.2GHz送信機', 'スマートPVプラス'),
+    options=quotation_template_options(),
     placeholder="選択して下さい",
     index=None,
     key="select-quotation-template",
 )
+
+if st.button("テンプレートを適用"):
+    quotation_details = []
+    for quotation_template in quotation_template_list(title=ss.quotation_template_title):
+        quotation_details.append({
+            "項目": quotation_template.item,
+            "単価": quotation_template.unit_price,
+            "数量": quotation_template.quantity,
+            "単位": quotation_template.unit,
+            "税率": quotation_template.tax_rate,
+        })
+
+    if len(quotation_details) > 0:
+        ss.quotation_details = quotation_details
+        ss.quotation_details_df = pd.DataFrame(ss.quotation_details)
+        ss.df_result = pd.DataFrame({
+            "金額": ss.quotation_details_df["単価"] * ss.quotation_details_df["数量"],
+            "消費税": ss.quotation_details_df["単価"] * ss.quotation_details_df["数量"] * ss.quotation_details_df["税率"],
+        })
+    else:
+        ss.quotation_details = [
+            {
+                "項目": "",
+                "単価": 0,
+                "数量": 0,
+                "単位": "",
+                "税率": 0.1,
+            },
+        ]
+        ss.df_result = pd.DataFrame(
+            {
+                "金額": [0],
+                "消費税": [0],
+            }
+        )
 
 """
 ##### 見積り明細
@@ -48,10 +115,10 @@ quotation_template = st.selectbox(
 col_editor, col_result = st.columns([0.8, 0.2])
 
 with col_editor:
-    ss.quoatation_details_df = pd.DataFrame(quoatation_details)
+    ss.quotation_details_df = pd.DataFrame(ss.quotation_details)
 
     ss.edited_quotation_details_df = st.data_editor(
-        ss.quoatation_details_df,
+        ss.quotation_details_df,
         key="quotation_details_data_editor",
         column_config={
             "単価": st.column_config.NumberColumn(
@@ -75,16 +142,20 @@ with col_editor:
     )
 
 with col_result:
-    df_result = pd.DataFrame({
+    ss.df_result = pd.DataFrame({
         "金額": ss.edited_quotation_details_df["単価"] * ss.edited_quotation_details_df["数量"],
         "消費税": ss.edited_quotation_details_df["単価"] * ss.edited_quotation_details_df["数量"] * ss.edited_quotation_details_df["税率"],
     })
     st.dataframe(
-        df_result,
+        ss.df_result,
         height=600,
         hide_index=True,
         use_container_width=True
     )
+
+open_modal = st.button("テンプレート保存")
+if open_modal:
+    modal.open()
 
 """
 ##### 出張費
@@ -155,7 +226,12 @@ if st.button("見積書PDF作成"):
                 departure=quotation_departure,
                 arrival=quotation_arrival,
                 trip=quotation_trip,
-                details=pd.concat([ss.edited_quotation_details_df, df_result], axis=1)
+                details=pd.concat(
+                    [
+                        ss.edited_quotation_details_df,
+                        ss.df_result,
+                        pd.DataFrame({"備考": [''] * len(ss.edited_quotation_details_df.index)})
+                    ], axis=1)
             ),
             file_path=file_path
         )
@@ -170,7 +246,6 @@ if st.button("見積書PDF作成"):
 
     except Exception as e:
         st.toast(e)
-
 
 # style
 st.markdown("""
