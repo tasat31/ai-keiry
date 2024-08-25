@@ -74,6 +74,8 @@ def output(entried_at_from: datetime, entried_at_to: datetime):
             CASE it.category
                 WHEN 'PR' THEN ifnull(bl.total_amount, 0) + ifnull(da.total_amount,0) - ifnull(ca.total_amount, 0)
                 WHEN 'LS' THEN ifnull(bl.total_amount, 0) + ifnull(da.total_amount,0) - ifnull(ca.total_amount, 0)
+                WHEN 'CL' THEN ifnull(bl.total_amount, 0) + ifnull(da.total_amount,0) - ifnull(ca.total_amount, 0)
+                WHEN 'FL' THEN ifnull(bl.total_amount, 0) + ifnull(da.total_amount,0) - ifnull(ca.total_amount, 0)
                 ELSE ifnull(bl.total_amount, 0) + ifnull(ca.total_amount, 0) - ifnull(da.total_amount,0)
             END AS balance_actual_amount,
             ifnull(cp.total_amount, 0) AS credit_predict_total_amount,
@@ -81,14 +83,18 @@ def output(entried_at_from: datetime, entried_at_to: datetime):
             CASE it.category
                 WHEN 'PR' THEN ifnull(dp.total_amount, 0) - ifnull(cp.total_amount, 0)
                 WHEN 'LS' THEN ifnull(dp.total_amount, 0) - ifnull(cp.total_amount, 0)
+                WHEN 'CL' THEN ifnull(dp.total_amount, 0) - ifnull(cp.total_amount, 0)
+                WHEN 'FL' THEN ifnull(dp.total_amount, 0) - ifnull(cp.total_amount, 0)
                 ELSE ifnull(cp.total_amount, 0) - ifnull(dp.total_amount, 0)
             END AS balance_predict_amount,
             ifnull(ca.total_amount, 0) + ifnull(cp.total_amount, 0) AS credit_actual_predict_total_amount,
             ifnull(da.total_amount, 0) + ifnull(dp.total_amount, 0) AS debit_actual_predict_total_amount,
             CASE it.category
-                WHEN 'PR' THEN (ifnull(da.total_amount, 0) + ifnull(dp.total_amount,0)) - (ifnull(ca.total_amount, 0) + ifnull(cp.total_amount, 0))  
-                WHEN 'LS' THEN (ifnull(da.total_amount, 0) + ifnull(dp.total_amount,0)) - (ifnull(ca.total_amount, 0) + ifnull(cp.total_amount, 0)) 
-                ELSE (ifnull(ca.total_amount, 0) + ifnull(cp.total_amount, 0)) - (ifnull(da.total_amount, 0) + ifnull(dp.total_amount,0))
+                WHEN 'PR' THEN ifnull(bl.total_amount, 0) + (ifnull(da.total_amount, 0) + ifnull(dp.total_amount,0)) - (ifnull(ca.total_amount, 0) + ifnull(cp.total_amount, 0))
+                WHEN 'LS' THEN ifnull(bl.total_amount, 0) + (ifnull(da.total_amount, 0) + ifnull(dp.total_amount,0)) - (ifnull(ca.total_amount, 0) + ifnull(cp.total_amount, 0))
+                WHEN 'CL' THEN ifnull(bl.total_amount, 0) + (ifnull(da.total_amount, 0) + ifnull(dp.total_amount,0)) - (ifnull(ca.total_amount, 0) + ifnull(cp.total_amount, 0))
+                WHEN 'FL' THEN ifnull(bl.total_amount, 0) + (ifnull(da.total_amount, 0) + ifnull(dp.total_amount,0)) - (ifnull(ca.total_amount, 0) + ifnull(cp.total_amount, 0))
+                ELSE ifnull(bl.total_amount, 0) + (ifnull(ca.total_amount, 0) + ifnull(cp.total_amount, 0)) - (ifnull(da.total_amount, 0) + ifnull(dp.total_amount,0))
             END AS balance_actual_predict_amount,
             ifnull(ca.total_tax, 0) AS credit_actual_total_tax,
             ifnull(da.total_tax, 0) AS debit_actual_total_tax,
