@@ -68,6 +68,7 @@ def list():
                 created_at,
                 updated_at
              FROM projects
+             ORDER BY segment, launched_at
         """
 
     logger.debug(sql)
