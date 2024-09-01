@@ -8,10 +8,13 @@ from services.leads import lead_options
 from services.quotation_templates import quotation_template_options
 from services.quotation_templates import list as quotation_template_list
 from services.quotation_templates import bulk_entry as quotation_template_bulk_entry
+from services.quotation_templates import delete_by_title as quotation_template_delete_by_title
 from app.types.quotation import Quotation
 from app.pdfs.quotation import generate_quotation
 
-ss.quotation_template_title = None
+
+if 'quotation_template_title' not in ss:
+    ss.quotation_template_title = None
 
 if 'quotation_details' not in ss:
     ss.quotation_details = [
@@ -34,10 +37,13 @@ modal = Modal(
 
 if modal.is_open():
     with modal.container():
-        ss.quotation_template_title = st.text_input("見積りテンプレートタイトル", key="quotation-template-title")
+        ss.quotation_template_title = st.text_input("見積りテンプレートタイトル", key="quotation-template-title", value=ss.quotation_template_title)
 
         if st.button("保存"):
             try:
+                if ss.quotation_template_title is not None:
+                    quotation_template_delete_by_title(title=ss.quotation_template_title)
+
                 df_quotation_templates =  pd.concat([pd.DataFrame({"タイトル": [ss.quotation_template_title] * len(ss.edited_quotation_details_df.index)}), ss.edited_quotation_details_df], axis=1)
                 quotation_template_bulk_entry(
                     df_quotation_templates.to_csv().split('\n')
@@ -59,8 +65,6 @@ quotation_customer = st.selectbox(
     index=None,
     placeholder="選択して下さい",
 )
-
-quotation_title = st.text_input(label="件名")
 
 ss.quotation_template_title = st.selectbox(
     label="見積りテンプレート選択",
@@ -104,6 +108,8 @@ if st.button("テンプレートを適用"):
                 "消費税": [0],
             }
         )
+
+quotation_title = st.text_input(label="件名", value=ss.quotation_template_title)
 
 """
 ##### 見積り明細

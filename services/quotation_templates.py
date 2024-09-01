@@ -140,6 +140,19 @@ def delete(id=None):
     logger.debug(sql)
     db_write(sql)
 
+def delete_by_title(title=None):
+    if (id is None):
+        return
+
+    sql = """
+            DELETE
+            FROM quotation_templates
+            WHERE title='%s'
+        """ % (title)
+
+    logger.debug(sql)
+    db_write(sql)
+
 def bulk_entry(csv_records: List):
     try:
         for csv_rec in csv_records[1:]:
