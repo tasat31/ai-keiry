@@ -247,6 +247,68 @@ def entry(
     logger.debug(sql)
     db_write(sql)
 
+def update(
+        lead: Lead = None
+    ):
+
+    if (lead is None):
+        return
+
+    sql = """
+        UPDATE leads
+        SET
+            name = '%s',
+            entity = '%s',
+            postal_no = '%s',
+            prefecture = '%s',
+            city = '%s',
+            address = '%s',
+            url = '%s',
+            tel = '%s',
+            segment = '%s',
+            cluster = '%s',
+            trade_status = '%s',
+            rank = '%s',
+            first_contacted_at = %s,
+            first_contacted_media = '%s',
+            last_contacted_at = %s,
+            description = '%s',
+            partner_name = '%s',
+            partner_role = '%s',
+            partner_tel_1 = '%s',
+            partner_tel_2 = '%s',
+            partner_mail_address = '%s',
+            updated_at = '%s'
+        WHERE id = %s
+    """ % (
+            lead.name,
+            lead.entity,
+            lead.postal_no.replace('-', ''),
+            lead.prefecture,
+            lead.city,
+            lead.address,
+            lead.url,
+            lead.tel,
+            lead.segment,
+            lead.cluster,
+            lead.trade_status,
+            lead.rank,
+            "'" + lead.first_contacted_at.strftime('%Y-%m-%d') + "'" if lead.first_contacted_at is not None else 'NULL',
+            lead.first_contacted_media,
+            "'" + lead.last_contacted_at.strftime('%Y-%m-%d') + "'" if lead.last_contacted_at is not None else 'NULL' ,
+            lead.description,
+            lead.partner_name,
+            lead.partner_role,
+            lead.partner_tel_1,
+            lead.partner_tel_2,
+            lead.partner_mail_address,
+            datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            lead.id,
+        )
+
+    logger.debug(sql)
+    db_write(sql)
+
 def delete(id=None):
     if (id is None):
         return
@@ -291,6 +353,42 @@ def bulk_entry(df: pd.DataFrame):
                 )
 
                 entry(lead=lead)
+        return {"message": "Uploaded successfully."}
+    except Exception as e:
+        return {"message": f"Error: {e}"}
+
+def bulk_update(df: pd.DataFrame):
+    try:
+        csv_records = df.to_csv().split('\n')
+        for csv_rec in csv_records[1:]:
+            data = csv_rec.split(',')
+            if len(data) >= 23:
+                lead = Lead(
+                    name=data[2],
+                    segment=data[3],
+                    cluster=data[4],
+                    trade_status=data[5],
+                    rank=data[6],
+                    first_contacted_at=datetime.strptime(data[7], '%Y-%m-%d'),
+                    first_contacted_media=data[8],
+                    last_contacted_at=datetime.strptime(data[9], '%Y-%m-%d'),
+                    description=data[10],
+                    entity=data[11],
+                    postal_no=data[12],
+                    prefecture=data[13],
+                    city=data[14],
+                    address=data[15],
+                    url=data[16],
+                    tel=data[17],
+                    partner_name=data[18],
+                    partner_role=data[19],
+                    partner_tel_1=data[20],
+                    partner_tel_2=data[21],
+                    partner_mail_address=data[22],
+                    id=data[23],
+                )
+
+                update(lead=lead)
         return {"message": "Uploaded successfully."}
     except Exception as e:
         return {"message": f"Error: {e}"}

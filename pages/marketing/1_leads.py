@@ -4,7 +4,7 @@ from streamlit_modal import Modal
 import pandas as pd
 from constants import options
 from app.types.lead import Lead
-from services.leads import list, entry, cluster_options, bulk_entry
+from services.leads import list, entry, cluster_options, bulk_entry, bulk_update
 
 """
 ### 見込み客リスト
@@ -126,15 +126,15 @@ for lead in list(
     cluster=cluster_selected,
 ):
     leads.append({
-        "id": lead.id,
+        "edit": False,
         "名称": lead.name,
         "セグメント": lead.segment,
         "クラスター": lead.cluster,
         "取引状況": lead.trade_status,
         "ランク":  lead.rank,
-        "初回コンタクト日":  lead.first_contacted_at.strftime('%Y-%m-%d') if lead.first_contacted_at is not None else '',
+        "初回コンタクト日":  lead.first_contacted_at,
         "初回コンタクト手段":  lead.first_contacted_media,
-        "直近のコンタクト日":  lead.last_contacted_at.strftime('%Y-%m-%d') if lead.last_contacted_at is not None else '',
+        "直近のコンタクト日":  lead.last_contacted_at,
         "説明":  lead.description,
         "法人/個人": lead.entity,
         "郵便番号": lead.postal_no,
@@ -148,20 +148,52 @@ for lead in list(
         "担当者・電話番号1":  lead.partner_tel_1,
         "担当者・電話番号2":  lead.partner_tel_2,
         "担当者・メールアドレス":  lead.partner_mail_address,
+        "id": lead.id,
     })
 
-st.dataframe(
+leads_edited = st.data_editor(
     pd.DataFrame(leads),
     width=800,
     height=600,
     column_config={
+        "セグメント": st.column_config.SelectboxColumn(
+            "セグメント",
+            options=options.segments,
+        ),
+        "取引状況": st.column_config.SelectboxColumn(
+            "取引状況",
+            options=options.lead_trade_status,
+        ),
+        "ランク": st.column_config.SelectboxColumn(
+            "ランク",
+            options=options.lead_ranks,
+        ),
+        "初回コンタクト日": st.column_config.DateColumn(
+            "初回コンタクト日",
+        ),
+        "初回コンタクト手段": st.column_config.SelectboxColumn(
+            "初回コンタクト手段",
+            options=options.lead_contacted_media,
+        ),
+        "直近のコンタクト日": st.column_config.DateColumn(
+            "直近のコンタクト日",
+        ),
+        "法人/個人": st.column_config.SelectboxColumn(
+            "法人/個人",
+            options=options.lead_entities,
+        ),
         "URL": st.column_config.LinkColumn(
             validate="^http",
             max_chars=256,
         ),
     },
+    disabled=["id"],
     hide_index=True,
 )
+
+if st.button("チェックした行を更新", type="primary"):
+    res = bulk_update(leads_edited.query('edit == True'))
+    st.toast(res["message"])
 
 st.caption("見込み客CSVアップロード")
 uploaded_file = st.file_uploader(
