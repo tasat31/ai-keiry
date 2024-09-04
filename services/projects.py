@@ -1,3 +1,4 @@
+import pandas as pd
 from datetime import datetime
 from settings import logger
 from resources.keiry_db import db_read, db_write
@@ -153,6 +154,48 @@ def entry(
     logger.debug(sql)
     db_write(sql)
 
+def update(
+        project: Project = None
+    ):
+
+    if (project is None):
+        return
+
+    sql = """
+        UPDATE projects
+            SET
+                segment = '%s',
+                title = '%s',
+                description = '%s',
+                launched_at = '%s',
+                completed_at = '%s',
+                partner = '%s',
+                status = '%s',
+                estimate_sales = '%s',
+                estimate_cost = '%s',
+                estimate_profit = '%s',
+                tax_rate = '%s',
+                updated_at = '%s'
+        WHERE id = %s
+    """ % (
+            project.segment,
+            project.title,
+            project.description,
+            project.launched_at.strftime('%Y-%m-%d'),
+            project.completed_at.strftime('%Y-%m-%d'),
+            project.partner,
+            project.status,
+            project.estimate_sales,
+            project.estimate_cost,
+            project.estimate_profit,
+            project.tax_rate,
+            datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            project.id,
+        )
+
+    logger.debug(sql)
+    db_write(sql)
+
 def delete(id=None):
     if (id is None):
         return
@@ -189,6 +232,32 @@ def bulk_entry(csv_records: List):
                 )
 
                 entry(project=project)
+        return {"message": "Uploaded successfully."}
+    except Exception as e:
+        return {"message": f"Error: {e}"}
+
+def bulk_update(df: pd.DataFrame):
+    try:
+        csv_records = df.to_csv().split('\n')
+        for csv_rec in csv_records[1:]:
+            data = csv_rec.split(',')
+            if len(data) >= 12:
+                project = Project(
+                    segment=data[2],
+                    title=data[3],
+                    description=data[4],
+                    launched_at=data[5],
+                    completed_at=data[6],
+                    partner=data[7],
+                    status=data[8],
+                    estimate_sales=data[9],
+                    estimate_cost=data[10],
+                    estimate_profit=data[11],
+                    tax_rate=data[12],
+                    id=data[13],
+                )
+
+                update(project=project)
         return {"message": "Uploaded successfully."}
     except Exception as e:
         return {"message": f"Error: {e}"}

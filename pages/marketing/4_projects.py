@@ -4,7 +4,7 @@ from streamlit_modal import Modal
 import pandas as pd
 from constants import options
 from app.types.project import Project
-from services.projects import list, entry
+from services.projects import list, entry, bulk_update
 
 """
 ### プロジェクト一覧
@@ -75,26 +75,52 @@ if modal.is_open():
 
 for project in list():
     projects.append({
-        "id": project.id,
+        "edit": False,
         "セグメント": project.segment,
         "タイトル": project.title,
         "説明": project.description,
-        "開始日": project.launched_at.strftime('%Y-%m-%d'),
-        "完了日": project.completed_at.strftime('%Y-%m-%d'),
+        "開始日": project.launched_at,
+        "完了日": project.completed_at,
         "取引先": project.partner,
         "ステータス": project.status,
         "売上(計画)": project.estimate_sales,
         "原価(計画)": project.estimate_cost,
         "損益(計画)": project.estimate_profit,
         "消費税率": project.tax_rate,
+        "id": project.id,
     })
 
-st.dataframe(
+projects_edited = st.data_editor(
     pd.DataFrame(projects),
     width=800,
     height=600,
+    column_config={
+        "セグメント": st.column_config.SelectboxColumn(
+            "セグメント",
+            options=options.segments,
+        ),
+        "開始日": st.column_config.DateColumn(
+            "開始日",
+        ),
+        "完了日": st.column_config.DateColumn(
+            "完了日",
+        ),
+        "ステータス": st.column_config.SelectboxColumn(
+            "ステータス",
+            options=options.project_status,
+        ),
+        "消費税率": st.column_config.SelectboxColumn(
+            "消費税率",
+            options=options.tax_rates,
+        ),
+    },
+    disabled=["id"],
     hide_index=True,
 )
+
+if st.button("チェックした行を更新", type="primary"):
+    res = bulk_update(projects_edited.query('edit == True'))
+    st.toast(res["message"])
 
 # style
 st.markdown("""
