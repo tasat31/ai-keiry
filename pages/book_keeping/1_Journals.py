@@ -5,7 +5,7 @@ import datetime
 import calendar
 from constants import options, segments
 from app.types.journal import Journal
-from services.journals import entry, list, credit_options, debit_options
+from services.journals import entry, list, credit_options, debit_options, bulk_update
 
 @st.cache_data
 def credit_options_cached():
@@ -300,6 +300,39 @@ with col21:
 with col22:
     partner_input = st.text_input("取引先")
 
+col_btn_1, col_btn_2, col_btn_3 = st.columns(3)
+
+with col_btn_1:
+    open_expense_modal = st.button(
+        ":pencil: 販管費及び一般管理費",
+        type="secondary",
+        use_container_width=True,
+        key="open-entry-expense-modal"
+    )
+
+    if open_expense_modal:
+        expense_modal.open()
+
+with col_btn_2:
+    open_sales_and_purchase_modal = st.button(
+        ":pencil: 売上と仕入れ",
+        type="secondary",
+        use_container_width=True,
+        key="entry-sales-and-purchase-modal"
+    )
+
+    if open_sales_and_purchase_modal:
+        sales_and_purchase_modal.open()
+
+with col_btn_3:
+    st.download_button(
+        label=":white_check_mark: CSV ダウンロード",
+        data=pd.DataFrame(journals_for_download).to_csv().encode('utf-8'),
+        file_name='keiry_journal_data.csv',
+        use_container_width=True,
+        mime='text/csv',
+    )
+
 for journal in list(
     entried_at_from=entried_at_from,
     entried_at_to=entried_at_to,
@@ -309,7 +342,8 @@ for journal in list(
     partner_input=partner_input
 ):
     journals.append({
-        "日付": journal.entried_at.strftime('%Y-%m-%d'),
+        "edit": False,
+        "日付": journal.entried_at,
         "摘要": journal.summary,
         "現金支出": journal.cash_out,
         "現金収入": journal.cash_in,
@@ -325,6 +359,7 @@ for journal in list(
         "セグメント":  journal.segment,
         "仮受消費税": journal.tax_in,
         "支払消費税": journal.tax_out,
+        "id": journal.id,
     })
 
     if entried_at_from is None:
@@ -363,10 +398,24 @@ journals_summary.append({
     "仮受-支払": total_tax_in - total_tax_out,
 })
 
-st.dataframe(
+journals_edited = st.data_editor(
     pd.DataFrame(journals),
     width=800,
-    height=400,
+    height=600,
+    column_config={
+        "日付": st.column_config.DateColumn(
+            "日付",
+        ),
+        "セグメント": st.column_config.SelectboxColumn(
+            "セグメント",
+            options=options.segments,
+        ),
+        "消費税率": st.column_config.SelectboxColumn(
+            "消費税率",
+            options=options.tax_rates,
+        ),
+    },
+    disabled=["id"],
     hide_index=True,
 )
 
@@ -377,39 +426,13 @@ st.dataframe(
     hide_index=True,
 )
 
+if st.button("チェックした行を更新", type="primary"):
+    journals_edited['fiscal_term'] = journals_edited.apply(lambda row: st.session_state['fiscal_term'], axis=1)
+    journals_edited['month'] = journals_edited.apply(lambda row: row['日付'].strftime('%Y%m'), axis=1)
 
-col_btn_1, col_btn_2, col_btn_3 = st.columns(3)
-
-with col_btn_1:
-    open_expense_modal = st.button(
-        ":pencil: 販管費及び一般管理費",
-        type="secondary",
-        use_container_width=True,
-        key="open-entry-expense-modal"
-    )
-
-    if open_expense_modal:
-        expense_modal.open()
-
-with col_btn_2:
-    open_sales_and_purchase_modal = st.button(
-        ":pencil: 売上と仕入れ",
-        type="secondary",
-        use_container_width=True,
-        key="entry-sales-and-purchase-modal"
-    )
-
-    if open_sales_and_purchase_modal:
-        sales_and_purchase_modal.open()
-
-with col_btn_3:
-    st.download_button(
-        label=":white_check_mark: CSV ダウンロード",
-        data=pd.DataFrame(journals_for_download).to_csv().encode('utf-8'),
-        file_name='keiry_journal_data.csv',
-        use_container_width=True, 
-        mime='text/csv',
-    )
+    st.write(journals_edited.query('edit == True'))
+    res = bulk_update(journals_edited.query('edit == True'))
+    st.toast(res["message"])
 
 # style
 st.markdown("""

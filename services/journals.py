@@ -1,3 +1,4 @@
+import pandas as pd
 from datetime import datetime
 from settings import logger
 from resources.keiry_db import db_read, db_write
@@ -227,6 +228,64 @@ def entry(
     logger.debug(sql)
     db_write(sql)
 
+def update(
+        journal: Journal = None
+    ):
+
+    if (journal is None):
+        return
+
+    sql = """
+        UPDATE journals
+            SET
+                entried_at = '%s',
+                credit = '%s',
+                debit = '%s',
+                amount = %s,
+                tax_rate = %s,
+                tax = %s,
+                summary = '%s',
+                remark = '%s',
+                partner = '%s',
+                cash_in = %s,
+                cash_out = %s,
+                tax_in = %s,
+                tax_out = %s,
+                cost_type = '%s',
+                segment = '%s',
+                project_code = '%s',
+                fiscal_term = '%s',
+                month = '%s',
+                closed = %s,
+                updated_at = '%s'
+        WHERE id = %s
+    """ % (
+            journal.entried_at.strftime('%Y-%m-%d'),
+            journal.credit,
+            journal.debit,
+            journal.amount,
+            journal.tax_rate,
+            journal.tax,
+            journal.summary,
+            journal.remark,
+            journal.partner,
+            journal.cash_in,
+            journal.cash_out,
+            journal.tax_in,
+            journal.tax_out,
+            journal.cost_type,
+            journal.segment,
+            journal.project_code,
+            journal.fiscal_term,
+            journal.month,
+            journal.closed,
+            datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            journal.id,
+        )
+
+    logger.debug(sql)
+    db_write(sql)
+
 def delete(id=None):
     if (id is None):
         return
@@ -265,6 +324,40 @@ def bulk_entry(csv_records: List):
                 )
 
                 entry(journal=journal)
+        return {"message": "Uploaded successfully."}
+    except Exception as e:
+        return {"message": f"Error: {e}"}
+
+def bulk_update(df: pd.DataFrame):
+    try:
+        csv_records = df.to_csv().split('\n')
+        for csv_rec in csv_records[1:]:
+            data = csv_rec.split(',')
+            if len(data) >= 21:
+                journal = Journal(
+                    entried_at=data[2],
+                    summary=data[3],
+                    cash_out=data[4],
+                    cash_in=data[5],
+                    credit=data[6],
+                    debit=data[7],
+                    amount=data[8],
+                    tax_rate=data[9],
+                    tax=data[10],
+                    remark=data[12],
+                    partner=data[13],
+                    cost_type=data[14],
+                    segment=data[15],
+                    tax_in=data[16],
+                    tax_out=data[17],
+                    project_code='',
+                    id=data[18],
+                    fiscal_term=data[19],
+                    month=data[20],
+                    closed=True,
+                )
+                update(journal=journal)
+
         return {"message": "Uploaded successfully."}
     except Exception as e:
         return {"message": f"Error: {e}"}
