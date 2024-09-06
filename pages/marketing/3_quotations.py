@@ -12,7 +12,6 @@ from services.quotation_templates import delete_by_title as quotation_template_d
 from app.types.quotation import Quotation
 from app.pdfs.quotation import generate_quotation
 
-
 if 'quotation_template_title' not in ss:
     ss.quotation_template_title = None
 
@@ -214,6 +213,7 @@ quotation_other_conditions = st.multiselect(
 quotation_remark = st.text_area(label="備考")
 
 if st.button("見積書PDF作成"):
+    print("%s, %s, %s, %s, %s, %s" % (ss.company_name, ss.company_postal_no, ss.company_address, ss.company_tax_no, ss.company_tel, ss.company_mail))
     try:
         file_path='/tmp/quotation.pdf'
         generate_quotation(
@@ -234,7 +234,14 @@ if st.button("見積書PDF作成"):
                         ss.edited_quotation_details_df,
                         ss.df_result,
                         pd.DataFrame({"備考": [''] * len(ss.edited_quotation_details_df.index)})
-                    ], axis=1)
+                    ], axis=1
+                ),
+                company_name=ss.company_name,
+                company_postal_no=ss.company_postal_no,
+                company_address=ss.company_address,
+                company_tax_no=ss.company_tax_no,
+                company_tel=ss.company_tel,
+                company_mail=ss.company_mail,
             ),
             file_path=file_path
         )

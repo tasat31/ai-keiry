@@ -1,6 +1,7 @@
 import datetime
 from app.types.quotation import Quotation
 from xhtml2pdf import pisa
+import fitz
 
 def currency_format(x):
     return "{:,d}".format(int(x))
@@ -51,8 +52,8 @@ def generate_quotation(
     <h1 style="text-align: center; font-size: 24px; font-weight:bold;">御　見　積　書</h1>
     <h2 style="text-align: left; font-size: 20px;">%s</h2>
     <table>
-        <td style="width: 500px;">
-            <h3 style="text-align: left; font-size: 18px;">件名: %s</h3>
+        <td style="width: 470px;">
+            <h3 style="text-align: left; font-size: 16px;">件名: %s</h3>
             <div style="text-align: left; font-size: 14px;">次の通り、御見積り申し上げます。</div>
             <div style="text-decoration: underline; padding-top: 10px;">
                 <span style="font-size: 20px;">合計金額(税込):</span><span style="font-size: 24px;"> %s 円</span>
@@ -64,12 +65,12 @@ def generate_quotation(
             </ul>
         </td>
         <td>
-            <div>ハートむせん合同会社</div>
-            <div>〒899-4501</div>
-            <div>鹿児島県霧島市福山町6035番2</div>
-            <div>登録番号: T8340003002407</div>
-            <div>TEL : 090-2046-0867</div>
-            <div>Mail: sales@heart-musen.com</div>
+            <div>%s</div>
+            <div>〒%s</div>
+            <div>%s</div>
+            <div>登録番号: %s</div>
+            <div>TEL : %s</div>
+            <div>Mail: %s</div>
         </td>
     </table>
     <div style="margin-top: 20px; font-size: 14px;">[内訳]</div>
@@ -112,6 +113,12 @@ def generate_quotation(
         quotation.delivery,
         quotation.payment,
         quotation.expiry,
+        quotation.company_name,
+        quotation.company_postal_no,
+        quotation.company_address,
+        quotation.company_tax_no,
+        quotation.company_tel,
+        quotation.company_mail,
         quotation.details.to_html(
             columns=['項目', '単価', '数量', '単位', '金額', '備考'],
             col_space=[400, 100, 40, 40, 100, 100],
@@ -134,5 +141,27 @@ def generate_quotation(
         quotation.remark
     )
 
-    with open(file_path, "wb") as pdf_file:
+    temporary_work_file_path = "/tmp/work.pdf"
+    with open(temporary_work_file_path, "wb") as pdf_file:
         pisa.CreatePDF(html_content, dest=pdf_file)
+
+    pdf_document = fitz.open(temporary_work_file_path)
+
+    # Specify the image you want to overlay
+    image_path = "assets/stamp.png"
+
+    # Select the page number (0-based index)
+    page_number = 0  # First page
+    page = pdf_document.load_page(page_number)
+
+    # Set image properties: position and size (x0, y0, x1, y1)
+    rect = fitz.Rect(525, 175, 575, 225)
+
+    # Insert the image into the selected page at the specified position
+    page.insert_image(rect, filename=image_path)
+
+    # Save the updated PDF to a new file
+    pdf_document.save(file_path)
+
+    # Close the document
+    pdf_document.close()

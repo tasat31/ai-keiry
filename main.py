@@ -3,7 +3,7 @@ import streamlit_authenticator as stauth
 import pandas as pd
 import yaml
 from yaml.loader import SafeLoader
-from services.kittings import fiscal_term_settings
+from services.kittings import fiscal_term_settings, company_profile_settings
 
 with open('.streamlit/credentials.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
@@ -26,6 +26,7 @@ if st.session_state['authentication_status'] is True:
 
     # set st.session_state
     st.session_state['fiscal_start_date'], st.session_state['fiscal_end_date'], st.session_state['fiscal_term'] = fiscal_term_settings()
+    st.session_state['company_name'], st.session_state['company_postal_no'], st.session_state['company_address'], st.session_state['company_tax_no'], st.session_state['company_tel'], st.session_state['company_mail'] = company_profile_settings()
 
     pg = st.navigation({
         "Home": [

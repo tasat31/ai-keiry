@@ -18,6 +18,12 @@ class Quotation(BaseModel):
     arrival: str
     trip: str
     details: pd.DataFrame
+    company_name: str
+    company_postal_no: str
+    company_address: str
+    company_tax_no: str
+    company_tel: str
+    company_mail: str
 
     class Config:
         arbitrary_types_allowed = True
