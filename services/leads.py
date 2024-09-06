@@ -415,6 +415,29 @@ def lead_options():
 
     return lead_options
 
+def lead_id_name_options():
+    sql = """
+            SELECT
+                id,
+                name,
+                updated_at
+             FROM leads
+             GROUP BY name, updated_at
+             ORDER BY updated_at
+        """
+
+    logger.debug(sql)
+    res = db_read(sql)
+
+    lead_id_name_options = []
+    for data in res.fetchall():
+        lead_id_name_options.append({
+            "id": data[0],
+            "name": data[1]
+        })
+
+    return lead_id_name_options
+
 def cluster_options():
     sql = """
             SELECT

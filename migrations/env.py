@@ -18,13 +18,13 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from models import Items, Journals, Projects, Leads, LeadComments, Activities, Emissions, Kittings, QuotationTemplates, Statements
+from models import Items, Journals, Projects, Leads, LeadThreads, Activities, Emissions, Kittings, QuotationTemplates, Statements
 target_metadata = [
     Items.metadata,
     Journals.metadata,
     Projects.metadata,
     Leads.metadata,
-    LeadComments.metadata,
+    LeadThreads.metadata,
     Activities.metadata,
     Emissions.metadata,
     Kittings.metadata,

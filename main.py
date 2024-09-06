@@ -34,6 +34,7 @@ if st.session_state['authentication_status'] is True:
         ],
         "Marketing":[
             st.Page("pages/marketing/1_leads.py", title="見込み客", icon=":material/add_circle:"),
+            st.Page("pages/marketing/6_leads_threads.py", title="見込み客スレッド", icon=":material/add_circle:"),
             st.Page("pages/marketing/2_senarios.py", title="シナリオの作成と実行", icon=":material/add_circle:"),
             st.Page("pages/marketing/3_quotations.py", title="見積書の作成", icon=":material/add_circle:"),
             st.Page("pages/marketing/4_projects.py", title="プロジェクト一覧", icon=":material/add_circle:"),
