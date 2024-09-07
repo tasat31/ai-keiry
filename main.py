@@ -3,7 +3,7 @@ import streamlit_authenticator as stauth
 import pandas as pd
 import yaml
 from yaml.loader import SafeLoader
-from services.kittings import fiscal_term_settings, company_profile_settings
+from services.kittings import fiscal_term_settings, company_profile_settings, account_information_settings
 
 with open('.streamlit/credentials.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
@@ -27,19 +27,21 @@ if st.session_state['authentication_status'] is True:
     # set st.session_state
     st.session_state['fiscal_start_date'], st.session_state['fiscal_end_date'], st.session_state['fiscal_term'] = fiscal_term_settings()
     st.session_state['company_name'], st.session_state['company_postal_no'], st.session_state['company_address'], st.session_state['company_tax_no'], st.session_state['company_tel'], st.session_state['company_mail'] = company_profile_settings()
+    st.session_state['account_information'] = account_information_settings()
 
     pg = st.navigation({
         "Home": [
             st.Page("pages/dashboard.py", title="dashboard", icon=":material/home:"),
+            st.Page("pages/marketing/5_business_plan.py", title="事業計画", icon=":material/add_circle:"),
             st.Page("pages/settings.py", title="設定", icon=":material/settings:")
         ],
         "Marketing":[
             st.Page("pages/marketing/1_leads.py", title="見込み客", icon=":material/add_circle:"),
             st.Page("pages/marketing/6_leads_threads.py", title="見込み客スレッド", icon=":material/add_circle:"),
             st.Page("pages/marketing/2_senarios.py", title="シナリオの作成と実行", icon=":material/add_circle:"),
-            st.Page("pages/marketing/3_quotations.py", title="見積書の作成", icon=":material/add_circle:"),
             st.Page("pages/marketing/4_projects.py", title="プロジェクト一覧", icon=":material/add_circle:"),
-            st.Page("pages/marketing/5_business_plan.py", title="事業計画", icon=":material/add_circle:"),
+            st.Page("pages/marketing/3_quotations.py", title="見積書の作成", icon=":material/add_circle:"),
+            st.Page("pages/marketing/7_invoices.py", title="請求書の発行", icon=":material/add_circle:"),
         ],
         "Accounting": [
             st.Page("pages/book_keeping/1_Journals.py", title="仕訳と元帳", icon=":material/add_circle:"),

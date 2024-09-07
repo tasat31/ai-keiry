@@ -202,3 +202,31 @@ def company_profile_settings(company_name=None, company_postal_no=None, company_
     company_mail_fetched = res.fetchone()[0]
 
     return (company_name_fetched, company_postal_no_fetched, company_address_fetched, company_tax_no_fetched, company_tel_fetched, company_mail_fetched)
+
+def account_information_settings(account_information=None):
+
+    if account_information is not None:
+        update_sql = """
+            UPDATE kittings
+            SET
+                parametar = '%s',
+                updated_at = '%s'
+            WHERE key = 'account_information'
+        """ % (account_information, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+        logger.debug(update_sql)
+        res = db_write(update_sql)
+
+    fetch_sql = """
+        SELECT
+            parametar
+        FROM kittings
+        WHERE key = 'account_information'
+    """
+
+    logger.debug(fetch_sql)
+    res = db_read(fetch_sql)
+
+    data = res.fetchone()
+
+    return data[0]

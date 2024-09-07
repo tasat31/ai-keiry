@@ -410,7 +410,7 @@ def lead_options():
     lead_options = []
     for data in res.fetchall():
         lead_options.append(
-            data[0] + (" 御中" if data[1] == "法人" else " 様")
+            data[0]
         )
 
     return lead_options

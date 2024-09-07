@@ -9,8 +9,8 @@ from services.quotation_templates import quotation_template_options
 from services.quotation_templates import list as quotation_template_list
 from services.quotation_templates import bulk_entry as quotation_template_bulk_entry
 from services.quotation_templates import delete_by_title as quotation_template_delete_by_title
-from app.types.quotation import Quotation
-from app.pdfs.quotation import generate_quotation
+from app.types.invoice import InvoicePaper
+from app.pdfs.invoice_paper import generate_invoice_paper
 
 if 'quotation_template_title' not in ss:
     ss.quotation_template_title = None
@@ -61,34 +61,8 @@ def apply_quotation_template():
             }
         )
 
-modal = Modal(
-    "見積りテンプレート保存",
-    key="add-quotation-template",
-
-    padding=20,
-    max_width=800,
-)
-
-if modal.is_open():
-    with modal.container():
-        ss.quotation_template_title = st.text_input("見積りテンプレートタイトル", key="quotation-template-title", value=ss.quotation_template_title)
-
-        if st.button("保存"):
-            try:
-                if ss.quotation_template_title is not None:
-                    quotation_template_delete_by_title(title=ss.quotation_template_title)
-
-                df_quotation_templates =  pd.concat([pd.DataFrame({"タイトル": [ss.quotation_template_title] * len(ss.edited_quotation_details_df.index)}), ss.edited_quotation_details_df], axis=1)
-                quotation_template_bulk_entry(
-                    df_quotation_templates.to_csv().split('\n')
-                )
-                st.toast("見積りテンプレートとして保存しました")
-                modal.close()
-            except Exception as e:
-                st.write(e)
-
 """
-### 見積書の作成
+### 請求書の発行
 """
 apply_quotation_template()
 
@@ -115,7 +89,7 @@ if st.button("テンプレートを適用"):
 quotation_title = st.text_input(label="件名", value=ss.quotation_template_title)
 
 """
-##### 見積り明細
+##### 請求明細
 """
 
 col_editor, col_result = st.columns([0.8, 0.2])
@@ -159,10 +133,6 @@ with col_result:
         use_container_width=True
     )
 
-open_modal = st.button("テンプレート保存")
-if open_modal:
-    modal.open()
-
 """
 ##### 出張費
 """
@@ -191,10 +161,10 @@ with col_trip:
     )
 
 """
-##### 見積り条件
+##### お支払い条件
 """
 
-quotation_delivery = st.text_input(label="納期", value="別途調整", key="quatation-delivery")
+quotation_delivery_date = st.date_input(label="納期", value=datetime.datetime.today(), key="quatation-delivery-date")
 
 quotation_payment =  st.selectbox(
     label="お支払い条件",
@@ -202,63 +172,59 @@ quotation_payment =  st.selectbox(
     key="select-payment-conditions"
 )
 
-quotation_expiry =  st.selectbox(
-    label="見積り有効期限",
-    options=options.expiries_of_quotation,
-    key="select-expiries-of-quotation"
-)
 
-quotation_other_conditions = st.multiselect(
-    label="その他見積り条件",
-    options=options.quatation_conditions,
-    placeholder="選択して下さい",
-)
+quotation_remark = st.text_area(label="備考", value="ペイペイ銀行ビジネス営業部(005) 普通預金1777361  ハートムセン(ド")
 
-quotation_remark = st.text_area(label="備考")
+col_btn_1, col_btn_2, col_btn_3 = st.columns([0.40, 0.30, 0.30])
 
-if st.button("見積書PDF作成"):
-    try:
-        file_path='/tmp/quotation.pdf'
-        generate_quotation(
-            quotation=Quotation(
-                issued_at=datetime.datetime.today(),
-                customer=quotation_customer + " 御中",
-                title=quotation_title,
-                delivery=quotation_delivery,
-                expiry=quotation_expiry,
-                payment=quotation_payment,
-                other_conditions=quotation_other_conditions,
-                remark=quotation_remark,
-                departure=quotation_departure,
-                arrival=quotation_arrival,
-                trip=quotation_trip,
-                details=pd.concat(
-                    [
-                        ss.edited_quotation_details_df,
-                        ss.df_result,
-                        pd.DataFrame({"備考": [''] * len(ss.edited_quotation_details_df.index)})
-                    ], axis=1
+with col_btn_1:
+    if st.button("請求書PDFプレビュー", use_container_width=True):
+        try:
+            file_path='/tmp/invoice.pdf'
+            generate_invoice_paper(
+                invoice_paper=InvoicePaper(
+                    issued_at=datetime.datetime.today(),
+                    customer=quotation_customer + " 御中",
+                    title=quotation_title,
+                    delivery_date=quotation_delivery_date,
+                    payment=quotation_payment,
+                    remark=quotation_remark,
+                    account_information=ss.account_information,
+                    details=pd.concat(
+                        [
+                            ss.edited_quotation_details_df,
+                            ss.df_result,
+                            pd.DataFrame({"備考": [''] * len(ss.edited_quotation_details_df.index)})
+                        ], axis=1
+                    ),
+                    company_name=ss.company_name,
+                    company_postal_no=ss.company_postal_no,
+                    company_address=ss.company_address,
+                    company_tax_no=ss.company_tax_no,
+                    company_tel=ss.company_tel,
+                    company_mail=ss.company_mail,
                 ),
-                company_name=ss.company_name,
-                company_postal_no=ss.company_postal_no,
-                company_address=ss.company_address,
-                company_tax_no=ss.company_tax_no,
-                company_tel=ss.company_tel,
-                company_mail=ss.company_mail,
-            ),
-            file_path=file_path
-        )
-
-        with open(file_path, "rb") as file:
-            st.download_button(
-                label="見積書PDFをダウンロード",
-                data=file,
-                file_name="御見積書_%s.pdf" % quotation_title,
-                mime="application/pdf"
+                file_path=file_path
             )
 
-    except Exception as e:
-        st.toast(e)
+            with open(file_path, "rb") as file:
+                st.download_button(
+                    label="請求書PDFをダウンロード",
+                    data=file,
+                    file_name="請求書_%s.pdf" % quotation_title,
+                    mime="application/pdf",
+                    use_container_width=True,
+                )
+
+        except Exception as e:
+            st.toast(e)
+
+with col_btn_2:
+    if st.button("売掛金計上", type="primary"):
+        pass
+
+with col_btn_3:
+    pass
 
 # style
 st.markdown("""
