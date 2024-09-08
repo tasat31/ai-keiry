@@ -230,3 +230,31 @@ def account_information_settings(account_information=None):
     data = res.fetchone()
 
     return data[0]
+
+def background_image_url_settings(background_image_url=None):
+
+    if background_image_url is not None:
+        update_sql = """
+            UPDATE kittings
+            SET
+                parametar = '%s',
+                updated_at = '%s'
+            WHERE key = 'background_image_url'
+        """ % (background_image_url, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+        logger.debug(update_sql)
+        res = db_write(update_sql)
+
+    fetch_sql = """
+        SELECT
+            parametar
+        FROM kittings
+        WHERE key = 'background_image_url'
+    """
+
+    logger.debug(fetch_sql)
+    res = db_read(fetch_sql)
+
+    data = res.fetchone()
+
+    return data[0]

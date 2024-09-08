@@ -3,7 +3,7 @@ import streamlit_authenticator as stauth
 import pandas as pd
 import yaml
 from yaml.loader import SafeLoader
-from services.kittings import fiscal_term_settings, company_profile_settings, account_information_settings
+from services.kittings import fiscal_term_settings, company_profile_settings, account_information_settings, background_image_url_settings
 
 with open('.streamlit/credentials.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
@@ -28,6 +28,10 @@ if st.session_state['authentication_status'] is True:
     st.session_state['fiscal_start_date'], st.session_state['fiscal_end_date'], st.session_state['fiscal_term'] = fiscal_term_settings()
     st.session_state['company_name'], st.session_state['company_postal_no'], st.session_state['company_address'], st.session_state['company_tax_no'], st.session_state['company_tel'], st.session_state['company_mail'] = company_profile_settings()
     st.session_state['account_information'] = account_information_settings()
+    st.session_state['background_image_url'] = background_image_url_settings()
+
+    st.sidebar.title("AI-Keiry")
+    st.sidebar.caption("Heart Musen LLC 2024")
 
     pg = st.navigation({
         "Home": [
@@ -68,12 +72,21 @@ elif st.session_state['authentication_status'] is False:
 elif st.session_state['authentication_status'] is None:
     st.warning('Please enter your username and password')
 
-
 # style
 st.markdown("""
     <style>
         .stDeployButton {display:none;}
         footer {visibility: hidden;}
         #stDecoration {display:none;}
+        .stApp {
+            background-image: url("%s");
+            background-color:rgba(255,255,255,0.5);
+            background-blend-mode:lighten;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .stApp header {
+            background: transparent
+        }
     </style>
-""", unsafe_allow_html=True)
+""" % st.session_state['background_image_url'], unsafe_allow_html=True)

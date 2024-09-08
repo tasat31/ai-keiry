@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from services.kittings import fiscal_term_settings, company_profile_settings, account_information_settings
+from services.kittings import fiscal_term_settings, company_profile_settings, account_information_settings, background_image_url_settings
 
 """
 ### 各種設定
@@ -46,8 +46,19 @@ account_information = st.text_input(label="入金口座情報", value=st.session
 
 if st.button(label="設定", key="set-account-information"):
     try:
-        st.session_state['account_information'] = account_information_settings()
+        st.session_state['account_information'] = account_information_settings(account_information=account_information)
         st.toast("入金口座情報を更新しました。")
     except Exception as e:
         st.write(e)
 
+"""
+#### 4. 壁紙URL
+"""
+background_image_url = st.text_input(label="壁紙URL", value=st.session_state['background_image_url'])
+
+if st.button(label="設定", key="set-background-image-url"):
+    try:
+        st.session_state['background_image_url'] = background_image_url_settings(background_image_url=background_image_url)
+        st.toast("壁紙URLを更新しました。")
+    except Exception as e:
+        st.write(e)
