@@ -7,8 +7,7 @@ Base = declarative_base()
 class Emissions(Base, TimestampMixin):
     __tablename__ = "emissions"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    journal_id = Column(Integer, nullable=False)
+    journal_id = Column(Integer, primary_key=True)
     activity_id = Column(Integer, nullable=False)
     activity = Column(Double, nullable=False)
     formula = Column(String, nullable=False)

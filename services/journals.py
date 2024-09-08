@@ -433,6 +433,9 @@ def list_by_promotion(entried_at_from=None, entried_at_to=None):
                 updated_at
              FROM journals
              %s
+             AND id NOT IN (
+                SELECT journal_id FROM emissions
+             )
              ORDER BY entried_at, credit, cost_type
         """ % condition
 
