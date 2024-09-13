@@ -5,6 +5,8 @@ import yaml
 from yaml.loader import SafeLoader
 from services.kittings import fiscal_term_settings, company_profile_settings, account_information_settings, background_image_url_settings
 
+st.session_state['background_image_url'] = ''
+
 with open('.streamlit/credentials.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
