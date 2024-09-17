@@ -1,10 +1,11 @@
 pydantic
 python-dotenv
+python-dateutil
 dill
 
 # Streamlit
 altair
-pandas
+numpy<2
 streamlit
 streamlit-modal
 streamlit-authenticator

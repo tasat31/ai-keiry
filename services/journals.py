@@ -299,28 +299,29 @@ def delete(id=None):
     logger.debug(sql)
     db_write(sql)
 
-def bulk_entry(csv_records: List):
+def bulk_entry(df: pd.DataFrame):
     try:
-        for csv_rec in csv_records:
+        csv_records = df.to_csv().split('\n')
+        for csv_rec in csv_records[1:]:
             data = csv_rec.split(',')
             if len(data) >= 16:
                 journal = Journal(
-                    entried_at=data[0],
-                    credit=data[1],
-                    debit=data[2],
-                    amount=data[3],
-                    tax_rate=data[4],
-                    tax=data[5],
-                    summary=data[6],
-                    remark=data[7],
-                    partner=data[8],
-                    cash_in=data[9],
-                    cash_out=data[10],
-                    cost_type=data[11],
-                    project_code=data[12],
-                    fiscal_term=data[13],
-                    month=data[14],
-                    closed=data[15],
+                    entried_at=data[1],
+                    credit=data[2],
+                    debit=data[3],
+                    amount=data[4],
+                    tax_rate=data[5],
+                    tax=data[6],
+                    summary=data[7],
+                    remark=data[8],
+                    partner=data[9],
+                    cash_in=data[10],
+                    cash_out=data[11],
+                    cost_type=data[12],
+                    project_code=data[13],
+                    fiscal_term=data[14],
+                    month=data[15],
+                    closed=data[16],
                 )
 
                 entry(journal=journal)
@@ -354,7 +355,7 @@ def bulk_update(df: pd.DataFrame):
                     id=data[18],
                     fiscal_term=data[19],
                     month=data[20],
-                    closed=True,
+                    closed=True,   # To Do True -> data[21]
                 )
                 update(journal=journal)
 
@@ -543,3 +544,13 @@ def list_by_project(entried_at_from=None, entried_at_to=None):
         )
 
     return journals
+
+def delete_all_expense_budget():
+    sql = """
+            DELETE
+            FROM journals
+            WHERE credit = '%s' AND closed=%s
+        """ % ('販売費及び一般管理費', False)
+
+    logger.debug(sql)
+    db_write(sql)
