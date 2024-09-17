@@ -8,7 +8,6 @@ from services.activities import list as activity_list
 from services.journals import list_by_project
 from services.emissions import bulk_entry as emission_bulk_entry
 
-@st.cache_data
 def options_activities():
     activities = []
     for activity in activity_list():
@@ -21,7 +20,7 @@ def options_activities():
 """
 ### プロジェクト別排出量
 """
-st.caption('売上原価の仕訳データをもとに排出量の算定を行います。')
+st.caption('売上高・売上原価の仕訳データをもとに排出量の算定を行います。')
 
 activities_by_project = []
 emissions_by_project = []

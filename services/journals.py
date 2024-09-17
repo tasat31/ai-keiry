@@ -479,7 +479,7 @@ def list_by_project(entried_at_from=None, entried_at_to=None):
     condition = ''
     if (entried_at_from is not None) and (entried_at_to is not None):
         condition = "WHERE entried_at BETWEEN '%s' AND '%s'" % (entried_at_from.strftime('%Y-%m-%d'), entried_at_to.strftime('%Y-%m-%d'))
-        condition = condition + " AND credit = '売上原価'"
+        condition = condition + " AND (credit = '売上原価' OR debit = '売上高')"
         condition = condition + " AND closed = True"
 
     sql = """
