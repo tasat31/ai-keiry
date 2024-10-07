@@ -33,14 +33,15 @@ if st.session_state['authentication_status'] is True:
     st.session_state['account_information'] = account_information_settings()
     st.session_state['background_image_url'] = background_image_url_settings()
 
-    st.sidebar.title("AI-Keiry")
+    st.sidebar.title("AI-Keiry Insight")
     st.sidebar.caption("Heart Musen LLC 2024")
 
     pg = st.navigation({
         "Home": [
             st.Page("pages/dashboard.py", title="dashboard", icon=":material/home:"),
             st.Page("pages/marketing/5_business_plan.py", title="事業計画", icon=":material/extension:"),
-            st.Page("pages/settings.py", title="設定", icon=":material/settings:")
+            st.Page("pages/settings.py", title="設定", icon=":material/settings:"),
+            st.Page("pages/chatbot.py", title="チャットボット(お試し)", icon=":material/robot:"),
         ],
         "Marketing":[
             st.Page("pages/marketing/1_leads.py", title="見込み客", icon=":material/add_circle:"),
@@ -51,7 +52,7 @@ if st.session_state['authentication_status'] is True:
             st.Page("pages/marketing/7_invoices.py", title="請求書の発行", icon=":material/file_open:"),
         ],
         "Accounting": [
-            st.Page("pages/book_keeping/1_Journals.py", title="仕訳と元帳", icon=":material/add_circle:"),
+            st.Page("pages/book_keeping/1_Journals.py", title="スマート仕訳", icon=":material/robot:"),
             st.Page("pages/book_keeping/2_Fixed_Asset_List.py", title="固定資産台帳", icon=":material/extension:"),
             st.Page("pages/book_keeping/3_Adjustment.py", title="決算整理仕訳", icon=":material/add_circle:"),
             st.Page("pages/book_keeping/4_Trial_Balance.py", title="合計残高試算表", icon=":material/add_circle:"),

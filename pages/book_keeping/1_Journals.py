@@ -6,6 +6,13 @@ import calendar
 from constants import options, segments
 from app.types.journal import Journal
 from services.journals import entry, list, credit_options, debit_options, bulk_update
+from pandasai import SmartDataframe
+from pandasai.llm.local_llm import LocalLLM
+
+model = LocalLLM(
+    api_base="http://localhost:11434/v1",
+    model="llama3"
+)
 
 @st.cache_data
 def credit_options_cached():
@@ -249,7 +256,7 @@ if sales_and_purchase_modal.is_open():
      
 
 """
-### 仕訳と元帳
+### スマート仕訳
 """
 
 journals = []
@@ -433,6 +440,15 @@ if st.button("チェックした行を更新", type="primary"):
     st.write(journals_edited.query('edit == True'))
     res = bulk_update(journals_edited.query('edit == True'))
     st.toast(res["message"])
+
+sdf = SmartDataframe(pd.DataFrame(journals), config={"llm": model})
+
+prompt = st.text_area("スマート分析")
+
+if st.button("Generate"):
+    if prompt:
+        with st.spinner("Generating Response..."):
+            st.write(sdf.chat(prompt))
 
 # style
 st.markdown("""

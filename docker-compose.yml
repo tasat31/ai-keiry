@@ -2,6 +2,7 @@ version: "3.8"
 
 volumes:
   ai-keiry-sqlite3-db:
+  ollama:
 
 services:
   app:
@@ -22,3 +23,11 @@ services:
       - DISPLAY=$DISPLAY
       - TZ=Asia/Tokyo
     network_mode: "host"
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
