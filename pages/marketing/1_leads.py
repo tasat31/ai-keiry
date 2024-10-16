@@ -97,9 +97,9 @@ if modal.is_open():
             modal.close()
 
 
-col1, col2, col3, col4 = st.columns([0.20, 0.30, 0.25, 0.25])
+col11, col12, col13, col14 = st.columns([0.20, 0.30, 0.25, 0.25])
 
-with col1:
+with col11:
     segment_selected = st.selectbox(
         label="セグメント",
         options=options.segments,
@@ -107,7 +107,7 @@ with col1:
         index=None
     )
 
-with col2:
+with col12:
     cluster_selected = st.selectbox(
         label="クラスター",
         options=cluster_options(),
@@ -115,15 +115,33 @@ with col2:
         index=None
     )
 
-with col3:
+with col13:
     pass
 
-with col4:
+with col14:
+    pass
+
+col21, col22, col23, col24 = st.columns([0.25, 0.30, 0.25, 0.20])
+
+with col21:
+    show_deleted = st.toggle(
+        label="削除を表示",
+        key="show-deleted",
+    )
+
+with col22:
+    pass
+
+with col23:
+    pass
+
+with col24:
     pass
 
 for lead in list(
     segment=segment_selected,
     cluster=cluster_selected,
+    show_deleted=show_deleted
 ):
     leads.append({
         "edit": False,

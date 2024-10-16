@@ -72,7 +72,7 @@ def find(id=None):
         updated_at=data[23],
     )
 
-def list(segment=None, cluster=None, last_contacted_at_from=None, last_contacted_at_to=None):
+def list(segment=None, cluster=None, last_contacted_at_from=None, last_contacted_at_to=None, show_deleted=False):
     where = ''
 
     if segment is not None:
@@ -91,6 +91,12 @@ def list(segment=None, cluster=None, last_contacted_at_from=None, last_contacted
             where = where + " AND %s" % last_contacted_at_condition
         else:
             where = last_contacted_at_condition
+
+    if show_deleted == False:
+        if where != '':
+            where = where + " AND trade_status <> '削除'"
+        else:
+            where = "trade_status <> '削除'"
 
     if where != '':
         where = "WHERE %s" % where
