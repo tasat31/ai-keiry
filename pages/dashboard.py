@@ -26,20 +26,19 @@ with col11.container(height=160):
     st.write("## %s件" % currency_format(leads_count))
 
 with col12.container(height=160):
-    st.write("##### 売上高")
-    st.write("### %sk円" % currency_format(int(sales_amount/1000.0 + 0.5)))
-    st.caption("税込")
+    st.write("###### 売上高(千円)")
+    st.write("## %s" % currency_format(int(sales_amount/1000.0 + 0.5)))
 
 with col13.container(height=160):
-    st.write("##### 費用")
-    st.write("### %sk円" % currency_format(int(expense_amount/1000 + 0.5)))
-    st.caption("税込")
+    st.write("###### 費用(千円)")
+    st.write("## %s" % currency_format(int(expense_amount/1000 + 0.5)))
 
 with col14.container(height=160):
-    st.write("##### 損益")
-    st.write("### %sk円" % currency_format(int(profit_amount/1000 + 0.5)))
-    st.caption("税込")
+    st.write("###### 損益(千円)")
+    st.write("## %s" % currency_format(int(profit_amount/1000 + 0.5)))
 
+
+st.caption("金額は税込")
 
 # st.write(df_sales_expense_leads_by_segment)
 

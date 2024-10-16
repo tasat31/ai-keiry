@@ -53,7 +53,7 @@ def generate_quotation(
     <h2 style="text-align: left; font-size: 20px;">%s</h2>
     <table>
         <td style="width: 470px;">
-            <h3 style="text-align: left; font-size: 16px;"><span style="font-size: 14px;">件名:</span> %s</h3>
+            <h3 style="text-align: left; font-size: 16px;"><span style="font-size: 14px;">[件名]</span> %s</h3>
             <div style="text-align: left; font-size: 14px;">次の通り、御見積り申し上げます。</div>
             <div style="text-decoration: underline; padding-top: 10px;">
                 <span style="font-size: 20px;">合計金額(税込):</span><span style="font-size: 24px;"> %s 円</span>
