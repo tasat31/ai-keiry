@@ -21,4 +21,4 @@ class Projects(Base, TimestampMixin):
     tax_rate = Column(Double, nullable=True)
 
     def __repr__(self) -> str:
-        return f"Project(project_code={self.project_code!r})"
+        return f"Project(project_id={self.id!r})"

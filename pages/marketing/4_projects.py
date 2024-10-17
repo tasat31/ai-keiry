@@ -86,6 +86,12 @@ for project in list():
         "売上(計画)": project.estimate_sales,
         "原価(計画)": project.estimate_cost,
         "損益(計画)": project.estimate_profit,
+        "売上(実績)": project.actual_sales,
+        "原価(実績)": project.actual_cost,
+        "損益(実績)": project.actual_profit,
+        "売上(残)": project.diff_sales,
+        "原価(残)": project.diff_cost,
+        "損益(残)": project.diff_profit,
         "消費税率": project.tax_rate,
         "id": project.id,
     })

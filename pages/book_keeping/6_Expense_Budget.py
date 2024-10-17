@@ -189,7 +189,7 @@ if st.button("予算案(月割)を反映", type="primary", use_container_width=T
                 "cash_in": 0,
                 "cash_out": row["現金支出"],
                 "cost_type": row["費目"],
-                "project_code": "",
+                "project_id": None,
                 "fiscal_term": st.session_state['fiscal_term'],
                 "month": entried_at.strftime('%Y%m'),
                 "closed": False

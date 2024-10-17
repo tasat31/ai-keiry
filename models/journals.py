@@ -23,7 +23,7 @@ class Journals(Base, TimestampMixin):
     tax_out = Column(Integer, nullable=False)
     cost_type = Column(String, nullable=False)
     segment = Column(String, nullable=False)
-    project_code = Column(String, nullable=False)
+    project_id = Column(Integer, nullable=True)
     fiscal_term = Column(String, nullable=False)
     month = Column(String, nullable=False)
     closed = Column(Boolean, nullable=False)

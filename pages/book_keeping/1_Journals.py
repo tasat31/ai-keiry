@@ -91,7 +91,7 @@ if expense_modal.is_open():
                     tax_out=expense_tax_out,
                     cost_type=expense_cost_type,
                     segment=segments.segments["others"],
-                    project_code="",
+                    project_id=None,
                     fiscal_term=st.session_state['fiscal_term'],
                     month=expense_entried_at.strftime('%Y%m'),
                     closed=True
@@ -112,8 +112,8 @@ if sales_and_purchase_modal.is_open():
             key="sales-segment"
         )
 
-        sales_project_code = ""
-        # project_code = st.selectbox(
+        sales_project_id = None
+        # project_id = st.selectbox(
         #    label="プロジェクトコード",
         #    options=options.segments,
         #    key="project-code"
@@ -170,7 +170,7 @@ if sales_and_purchase_modal.is_open():
                     tax_out=0,
                     cost_type="",
                     segment=sales_segment,
-                    project_code="",
+                    project_id=None,
                     fiscal_term=st.session_state['fiscal_term'],
                     month=sales_entried_at.strftime('%Y%m'),
                     closed=True
@@ -187,8 +187,8 @@ if sales_and_purchase_modal.is_open():
             key="purchase-segment"
         )
 
-        purchase_project_code = ""
-        # project_code = st.selectbox(
+        purchase_project_id = None
+        # project_id = st.selectbox(
         #    label="プロジェクトコード",
         #    options=options.segments,
         #    key="project-code"
@@ -245,7 +245,7 @@ if sales_and_purchase_modal.is_open():
                     tax_out=purchase_tax_out,
                     cost_type="",
                     segment=purchase_segment,
-                    project_code="",
+                    project_id=None,
                     fiscal_term=st.session_state['fiscal_term'],
                     month=purchase_entried_at.strftime('%Y%m'),
                     closed=True
@@ -366,6 +366,7 @@ for journal in list(
         "セグメント":  journal.segment,
         "仮受消費税": journal.tax_in,
         "支払消費税": journal.tax_out,
+        "プロジェクトid": journal.project_id,
         "id": journal.id,
     })
 

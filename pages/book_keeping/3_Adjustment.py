@@ -65,7 +65,7 @@ with other_tab:
                 tax_out=other_tax_out,
                 cost_type="",
                 segment="",
-                project_code="",
+                project_id=None,
                 fiscal_term=st.session_state['fiscal_term'],
                 month=other_entried_at.strftime('%Y%m'),
                 closed=True

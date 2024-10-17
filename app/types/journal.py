@@ -20,7 +20,7 @@ class Journal(BaseModel):
     tax_out: int = 0
     cost_type: Optional[str] = ''
     segment: Optional[str] = ''
-    project_code: Optional[str] = ''
+    project_id: Optional[int] = None
     fiscal_term: str
     month: str
     closed: bool = True

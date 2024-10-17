@@ -53,22 +53,49 @@ def find(id=None):
 
 def list():
     sql = """
+            WITH actual_sales AS (
+                SELECT
+                    project_id,
+                    SUM(amount) AS total_amount
+                FROM journals
+                WHERE project_id is not NULL
+                  AND debit = '売上高'
+                GROUP BY project_id
+            ),
+            actual_cost AS (
+                SELECT
+                    project_id,
+                    SUM(amount) AS total_amount
+                FROM journals
+                WHERE project_id is not NULL
+                  AND credit = '売上原価'
+                GROUP BY project_id
+            )
+
             SELECT
-                id,
-                segment,
-                title,
-                description,
-                launched_at,
-                completed_at,
-                partner,
-                status,
-                estimate_sales,
-                estimate_cost,
-                estimate_profit,
-                tax_rate,
-                created_at,
-                updated_at
-             FROM projects
+                prj.id,
+                prj.segment,
+                prj.title,
+                prj.description,
+                prj.launched_at,
+                prj.completed_at,
+                prj.partner,
+                prj.status,
+                prj.estimate_sales,
+                prj.estimate_cost,
+                prj.estimate_profit,
+                ifnull(asls.total_amount, 0),
+                ifnull(acst.total_amount, 0),
+                ifnull(asls.total_amount, 0) - ifnull(acst.total_amount, 0),
+                prj.estimate_sales - ifnull(asls.total_amount, 0),
+                prj.estimate_cost - ifnull(acst.total_amount, 0),
+                prj.estimate_profit - (ifnull(asls.total_amount, 0) - ifnull(acst.total_amount, 0)),
+                prj.tax_rate,
+                prj.created_at,
+                prj.updated_at
+             FROM projects prj
+             LEFT OUTER JOIN actual_sales asls ON prj.id = asls.project_id
+             LEFT OUTER JOIN actual_cost acst ON prj.id = acst.project_id
              ORDER BY segment, launched_at
         """
 
@@ -90,9 +117,15 @@ def list():
                 estimate_sales=data[8],
                 estimate_cost=data[9],
                 estimate_profit=data[10],
-                tax_rate=data[11],
-                created_at=data[12],
-                updated_at=data[13],
+                actual_sales=data[11],
+                actual_cost=data[12],
+                actual_profit=data[13],
+                diff_sales=data[14],
+                diff_cost=data[15],
+                diff_profit=data[16],
+                tax_rate=data[17],
+                created_at=data[18],
+                updated_at=data[19],
             )
         )
     
