@@ -173,7 +173,7 @@ quotation_payment =  st.selectbox(
 )
 
 
-quotation_remark = st.text_area(label="備考", value=ss.account_information)
+quotation_remark = st.text_area(label="備考")
 
 col_btn_1, col_btn_2, col_btn_3 = st.columns([0.40, 0.30, 0.30])
 
