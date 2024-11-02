@@ -73,7 +73,7 @@ for journal in list(
     summary_input=summary_input,
     partner_input=partner_input
 ):
-    if journal.credit == '販売費及び一般管理費' and journal.cost_type != '減価償却費':
+    if journal.credit == '販売費及び一般管理費' and journal.cost_type != '減価償却費' and journal.closed == True:
         journals.append({
             "年月": journal.entried_at.strftime("%Y-%m"),
             "摘要": journal.summary,
@@ -180,7 +180,7 @@ if st.button("予算案(月割)を反映", type="primary", use_container_width=T
                 "entried_at": entried_at,
                 "credit": "販売費及び一般管理費",
                 "debit": "現金及び預金",
-                "amount": row["現金支出"],
+                "amount": row["現金支出"] - int(row["現金支出"] * row["消費税率"] + 0.5),
                 "tax_rate": row["消費税率"],
                 "tax": int(row["現金支出"] * row["消費税率"] + 0.5),
                 "summary": row["摘要"],
@@ -198,8 +198,8 @@ if st.button("予算案(月割)を反映", type="primary", use_container_width=T
     st.write(pd.DataFrame(dict_budget))
 
     delete_all_expense_budget()
-    # res = bulk_entry(pd.DataFrame(dict_budget))
-    # st.toast(res["message"])
+    res = bulk_entry(pd.DataFrame(dict_budget))
+    st.toast(res["message"])
 
 # style
 st.markdown("""

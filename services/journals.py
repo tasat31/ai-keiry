@@ -305,6 +305,7 @@ def bulk_entry(df: pd.DataFrame):
         for csv_rec in csv_records[1:]:
             data = csv_rec.split(',')
             if len(data) >= 16:
+                print(data)
                 journal = Journal(
                     entried_at=data[1],
                     credit=data[2],
@@ -318,12 +319,11 @@ def bulk_entry(df: pd.DataFrame):
                     cash_in=data[10],
                     cash_out=data[11],
                     cost_type=data[12],
-                    project_id=data[13],
+                    project_id=data[13] if data[13] != '' else None,
                     fiscal_term=data[14],
                     month=data[15],
                     closed=data[16],
                 )
-
                 entry(journal=journal)
         return {"message": "Uploaded successfully."}
     except Exception as e:
