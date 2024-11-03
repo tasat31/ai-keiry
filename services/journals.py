@@ -363,6 +363,11 @@ def bulk_update(df: pd.DataFrame):
     except Exception as e:
         return {"message": f"Error: {e}"}
 
+def bulk_delete(df: pd.DataFrame):
+    for index, row in df.iterrows():
+        data = row.to_dict()
+        delete(id=int(data["id"]))
+
 def credit_options():
     sql = """
             SELECT

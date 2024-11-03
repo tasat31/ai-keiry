@@ -1,11 +1,12 @@
 import streamlit as st
+from streamlit import session_state as ss
 from streamlit_modal import Modal
 import pandas as pd
 import datetime
 import calendar
 from constants import options, segments
 from app.types.journal import Journal
-from services.journals import entry, list, credit_options, debit_options, bulk_update
+from services.journals import entry, list, credit_options, debit_options, bulk_entry, bulk_update, bulk_delete
 from pandasai import SmartDataframe
 from pandasai.llm.local_llm import LocalLLM
 
@@ -36,6 +37,14 @@ sales_and_purchase_modal = Modal(
     
     padding=20,
     max_width=800,
+)
+
+input_date_modal = Modal(
+    "日付を入力",
+    key="input-date-modal",
+
+    padding=20,
+    max_width=480,
 )
 
 if expense_modal.is_open():
@@ -255,6 +264,42 @@ if sales_and_purchase_modal.is_open():
                 st.toast(e)
      
 
+if input_date_modal.is_open():
+    with input_date_modal.container():
+        st.write(ss.journals_edited.query('edit == True'))
+        modify_entried_at = st.date_input("計上日", datetime.date.today(), key="modify-entried-at")
+
+        if st.button("日付を変えてコピー"):
+            for index, row in ss.journals_edited.query('edit == True').iterrows():
+                data = row.to_dict()
+                try:
+                    entry(journal=Journal(
+                        entried_at=modify_entried_at,
+                        credit=data["借方"],
+                        debit=data["貸方"],
+                        amount=int(data["金額(税抜)"]),
+                        tax_rate=float(data["消費税率"]),
+                        tax=int(data["消費税"]),
+                        summary=data["摘要"],
+                        remark=data["備考"],
+                        partner=data["取引先"],
+                        cash_in=int(data["現金収入"]),
+                        cash_out=int(data["現金支出"]),
+                        tax_in=int(data["仮受消費税"]),
+                        tax_out=int(data["支払消費税"]),
+                        cost_type=data["費目"],
+                        segment=data["セグメント"],
+                        project_id=data["プロジェクトid"],
+                        fiscal_term=st.session_state['fiscal_term'],
+                        month=modify_entried_at.strftime('%Y%m'),
+                        closed=True
+                    ))
+                except Exception as e:
+                    st.toast(e)
+
+            input_date_modal.close()
+            st.toast('記帳しました')
+
 """
 ### スマート仕訳
 """
@@ -406,7 +451,7 @@ journals_summary.append({
     "仮受-支払": total_tax_in - total_tax_out,
 })
 
-journals_edited = st.data_editor(
+ss.journals_edited = st.data_editor(
     pd.DataFrame(journals),
     width=800,
     height=600,
@@ -434,13 +479,25 @@ st.dataframe(
     hide_index=True,
 )
 
-if st.button("チェックした行を更新", type="primary"):
-    journals_edited['fiscal_term'] = journals_edited.apply(lambda row: st.session_state['fiscal_term'], axis=1)
-    journals_edited['month'] = journals_edited.apply(lambda row: row['日付'].strftime('%Y%m'), axis=1)
+col21, col22, col23 = st.columns(3)
 
-    st.write(journals_edited.query('edit == True'))
-    res = bulk_update(journals_edited.query('edit == True'))
-    st.toast(res["message"])
+with col21:
+    if st.button("チェックした行を更新", type="primary", use_container_width=True):
+        ss.journals_edited['fiscal_term'] = ss.journals_edited.apply(lambda row: st.session_state['fiscal_term'], axis=1)
+        ss.journals_edited['month'] = ss.journals_edited.apply(lambda row: row['日付'].strftime('%Y%m'), axis=1)
+
+        st.write(ss.journals_edited.query('edit == True'))
+        res = bulk_update(ss.journals_edited.query('edit == True'))
+        st.toast(res["message"])
+
+with col22:
+    open_input_date_modal =  st.button("日付を変えてコピー", type="primary", use_container_width=True)
+    if open_input_date_modal:
+        input_date_modal.open()
+
+with col23:
+    if st.button("削除", type="primary", use_container_width=True):
+        bulk_delete(ss.journals_edited.query('edit == True'))
 
 sdf = SmartDataframe(pd.DataFrame(journals), config={"llm": model})
 
