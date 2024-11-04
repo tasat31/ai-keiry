@@ -8,7 +8,7 @@ from app.types.business_plan import GeneralCostPlan, SalesPlan
 def sales_plan_list(entried_at_from=None, entried_at_to=None):
     pass
 
-def general_cost_plan_list(entried_at_from=None, entried_at_to=None):
+def general_cost_plan_list(entried_at_from=None, entried_at_to=None, closed=None):
     if (entried_at_from is None) or (entried_at_to is None):
         return
 
@@ -17,6 +17,9 @@ def general_cost_plan_list(entried_at_from=None, entried_at_to=None):
         condition = "WHERE entried_at BETWEEN '%s' AND '%s'" % (entried_at_from.strftime('%Y-%m-%d'), entried_at_to.strftime('%Y-%m-%d'))
         condition = condition + " AND credit = '販売費及び一般管理費'"
     
+    if (closed is not None):
+        condition = condition +" AND closed = %s" % closed
+
     sql = """
             SELECT
                 month,

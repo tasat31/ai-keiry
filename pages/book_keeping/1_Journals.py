@@ -318,7 +318,16 @@ entried_at_from = None
 entried_at_to = None
 count = 0
 
-st.write("会計期間: %s - %s" % (st.session_state['fiscal_start_date'].strftime("%Y-%m-%d"), st.session_state['fiscal_end_date'].strftime("%Y-%m-%d")))
+col01, col02 = st.columns(2)
+
+with col01:
+    st.write("会計期間: %s - %s" % (st.session_state['fiscal_start_date'].strftime("%Y-%m-%d"), st.session_state['fiscal_end_date'].strftime("%Y-%m-%d")))
+
+with col02:
+    show_closed_only = st.toggle(
+        label="実績のみ表示",
+        key="show-closed-only",
+    )
 
 col11, col12, col13, col14 = st.columns(4)
 
@@ -391,7 +400,8 @@ for journal in list(
     credit_selected=credit_selected,
     debit_selected=debit_selected,
     summary_input=summary_input,
-    partner_input=partner_input
+    partner_input=partner_input,
+    closed=True if show_closed_only else None
 ):
     journals.append({
         "edit": False,

@@ -37,7 +37,10 @@ with col21:
     )
 
 with col22:
-    pass
+    show_closed_only = st.toggle(
+        label="実績のみ表示",
+        key="show-closed-only",
+    )
 
 with col23:
     pass
@@ -47,7 +50,7 @@ with col24:
 
 
 general_cost_plans = []
-for data in general_cost_plan_list(entried_at_from=entried_at_from, entried_at_to=entried_at_to):
+for data in general_cost_plan_list(entried_at_from=entried_at_from, entried_at_to=entried_at_to, closed=True if show_closed_only else None):
     general_cost_plans.append(data.dict())
 
 df_general_cost_plans = pd.DataFrame(general_cost_plans)

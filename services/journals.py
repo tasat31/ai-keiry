@@ -68,7 +68,7 @@ def find(id=None):
         updated_at=data[21],
     )
 
-def list(entried_at_from=None, entried_at_to=None, credit_selected='ALL', debit_selected='ALL', summary_input='', partner_input=''):
+def list(entried_at_from=None, entried_at_to=None, credit_selected='ALL', debit_selected='ALL', summary_input='', partner_input='', closed=None):
 
     condition = ''
     if (entried_at_from is not None) and (entried_at_to is not None):
@@ -84,6 +84,9 @@ def list(entried_at_from=None, entried_at_to=None, credit_selected='ALL', debit_
 
         if (partner_input != ''):
             condition = condition + " AND partner LIKE '%" + partner_input + "%'"
+
+        if (closed is not None):
+            condition = condition + " AND closed = %s" % closed
 
     sql = """
             SELECT
