@@ -9,6 +9,8 @@ from app.types.journal import Journal
 from services.journals import entry, list, credit_options, debit_options, bulk_entry, bulk_update, bulk_delete
 from pandasai import SmartDataframe
 from pandasai.llm.local_llm import LocalLLM
+from settings import logger
+import math
 
 model = LocalLLM(
     api_base="http://localhost:11434/v1",
@@ -289,16 +291,18 @@ if input_date_modal.is_open():
                         tax_out=int(data["支払消費税"]),
                         cost_type=data["費目"],
                         segment=data["セグメント"],
-                        project_id=data["プロジェクトid"],
+                        project_id=None if math.isnan(data["プロジェクトid"]) else data["プロジェクトid"],
                         fiscal_term=st.session_state['fiscal_term'],
                         month=modify_entried_at.strftime('%Y%m'),
                         closed=True
                     ))
+                    input_date_modal.close()
+                    st.toast('記帳しました')
                 except Exception as e:
+                    logger.error(e)
+                    logger.error(data)
                     st.toast(e)
 
-            input_date_modal.close()
-            st.toast('記帳しました')
 
 """
 ### スマート仕訳
@@ -324,9 +328,9 @@ with col01:
     st.write("会計期間: %s - %s" % (st.session_state['fiscal_start_date'].strftime("%Y-%m-%d"), st.session_state['fiscal_end_date'].strftime("%Y-%m-%d")))
 
 with col02:
-    show_closed_only = st.toggle(
-        label="実績のみ表示",
-        key="show-closed-only",
+    show_expectation = st.toggle(
+        label="予測を表示",
+        key="show-expectation",
     )
 
 col11, col12, col13, col14 = st.columns(4)
@@ -401,7 +405,7 @@ for journal in list(
     debit_selected=debit_selected,
     summary_input=summary_input,
     partner_input=partner_input,
-    closed=True if show_closed_only else None
+    closed=False if show_expectation else True
 ):
     journals.append({
         "edit": False,

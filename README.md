@@ -51,3 +51,10 @@ The following command is useful for development.
 sqlite_web keiry.db
 ```
 
+# Generate Password
+
+```
+$ python3
+>>> from streamlit_authenticator.utilities.hasher import Hasher
+>>> Hasher(["password"]).generate()[0]
+```

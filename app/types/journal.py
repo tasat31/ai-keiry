@@ -1,7 +1,7 @@
 from typing import List
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
 
 class Journal(BaseModel):
     id: Optional[int] = None

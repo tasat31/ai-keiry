@@ -46,3 +46,11 @@ INSERT INTO ITEMS VALUES(44, '法人税等', '(7)損益', 'LS', 44, '2024-07-23'
 
 -- KITTINGS
 INSERT INTO KITTINGS VALUES(1, 'fiscal_start_date', '2024-07-01', '2024-08-21', '2024-08-21');
+INSERT INTO KITTINGS VALUES(2, 'company_name', 'ハートむせん合同会社', '2024-08-21', '2024-08-21');
+INSERT INTO KITTINGS VALUES(3, 'company_postal_no', '899-4501', '2024-08-21', '2024-08-21');
+INSERT INTO KITTINGS VALUES(4, 'company_address', '鹿児島県霧島市福山町福山6035番2', '2024-08-21', '2024-08-21');
+INSERT INTO KITTINGS VALUES(5, 'company_tel', '0995-73-8779', '2024-08-21', '2024-08-21');
+INSERT INTO KITTINGS VALUES(6, 'company_mail', 'sales@heart-musen.com', '2024-08-21', '2024-08-21');
+INSERT INTO KITTINGS VALUES(7, 'company_tax_no', 'T8340003002407', '2024-08-21', '2024-08-21');
+INSERT INTO KITTINGS VALUES(8, 'account_information', '◯◯銀行　△△支店　普通預金　 11111', '2024-08-21', '2024-08-21');
+INSERT INTO KITTINGS VALUES(9, 'background_image_url', 'https://www.sasebo99.com/storage/special_features/97/responsive_images/0kfUnW1ub4xJlqjHXUzyvFls1xasa65wca4UgTDa__1606_803.jpeg', '2024-09-08', '2024-09-08');
