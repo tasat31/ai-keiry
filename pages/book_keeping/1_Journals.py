@@ -34,7 +34,7 @@ expense_modal = Modal(
 )
 
 sales_and_purchase_modal = Modal(
-    ":pencil: 売上高と仕入れを記帳", 
+    ":pencil: 売上高と原価を記帳",
     key="entry-sales-and-purchase-modal",
     
     padding=20,
@@ -114,7 +114,7 @@ if expense_modal.is_open():
 
 if sales_and_purchase_modal.is_open():
     with sales_and_purchase_modal.container():
-        sales_tab, purchase_tab = st.tabs(["売上", "仕入れ"])
+        sales_tab, purchase_tab = st.tabs(["売上", "原価"])
 
     with sales_tab:
         sales_segment = st.selectbox(
@@ -229,7 +229,7 @@ if sales_and_purchase_modal.is_open():
 
         purchase_remark = st.text_input("備考", key="purhchase-remark")
 
-        if st.button("仕入れ記帳", type="primary", key="booking-purchase"):
+        if st.button("原価を記帳", type="primary", key="booking-purchase"):
             if purchase_paid == "現金":
                 purchase_debit = "現金及び預金"
                 purchase_cash_out = int(purchase_amount_inc_tax)
@@ -261,6 +261,7 @@ if sales_and_purchase_modal.is_open():
                     month=purchase_entried_at.strftime('%Y%m'),
                     closed=True
                 ))
+                sales_and_purchase_modal.close()
                 st.toast('記帳しました')
             except Exception as e:
                 st.toast(e)
@@ -380,7 +381,7 @@ with col_btn_1:
 
 with col_btn_2:
     open_sales_and_purchase_modal = st.button(
-        ":pencil: 売上と仕入れ",
+        ":pencil: 売上と原価",
         type="secondary",
         use_container_width=True,
         key="entry-sales-and-purchase-modal"
