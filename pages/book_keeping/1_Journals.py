@@ -319,9 +319,15 @@ total_tax = 0
 total_amount_include_tax = 0
 total_tax_in = 0
 total_tax_out = 0
-entried_at_from = None
-entried_at_to = None
 count = 0
+
+if 'entried_at_from' not in st.session_state:
+    st.session_state['entried_at_from'] = st.session_state['fiscal_start_date']
+
+if 'entried_at_to' not in st.session_state:
+    current_date =  datetime.date.today()
+    last_day = calendar.monthrange(current_date.year, current_date.month)[1]
+    st.session_state['entried_at_to'] = current_date.replace(day=last_day)
 
 col01, col02 = st.columns(2)
 
@@ -337,12 +343,10 @@ with col02:
 col11, col12, col13, col14 = st.columns(4)
 
 with col11:
-    entried_at_from = st.date_input("計上日カラ", value=st.session_state['fiscal_start_date'])
+    st.session_state['entried_at_from'] = st.date_input("計上日カラ", value=st.session_state['entried_at_from'])
 
 with col12:
-    current_date =  datetime.date.today()
-    last_day = calendar.monthrange(current_date.year, current_date.month)[1]
-    entried_at_to = st.date_input("計上日マデ", value=current_date.replace(day=last_day))
+    st.session_state['entried_at_to'] = st.date_input("計上日マデ", value=st.session_state['entried_at_to'])
 
 with col13:
     credit_selected = st.selectbox(
@@ -400,8 +404,8 @@ with col_btn_3:
     )
 
 for journal in list(
-    entried_at_from=entried_at_from,
-    entried_at_to=entried_at_to,
+    entried_at_from=st.session_state['entried_at_from'],
+    entried_at_to=st.session_state['entried_at_to'],
     credit_selected=credit_selected,
     debit_selected=debit_selected,
     summary_input=summary_input,
@@ -429,9 +433,6 @@ for journal in list(
         "プロジェクトid": journal.project_id,
         "id": journal.id,
     })
-
-    if entried_at_from is None:
-        entried_at_from = journal.entried_at
     
     total_cash_out = total_cash_out + journal.cash_out
     total_cash_in = total_cash_in + journal.cash_in
@@ -447,7 +448,7 @@ for journal in list(
 
 journals_summary.append({
     # "日付": "合計",
-    "期間(件数)": "%s 〜 %s (%s 件)" % (entried_at_from.strftime('%Y-%m-%d'), entried_at_to.strftime('%Y-%m-%d'), str(count)),
+    "期間(件数)": "%s 〜 %s (%s 件)" % (st.session_state['entried_at_from'].strftime('%Y-%m-%d'), st.session_state['entried_at_to'].strftime('%Y-%m-%d'), str(count)),
     "現金支出": total_cash_out,
     "現金収入": total_cash_in,
     "現金収入-支出": total_cash_in - total_cash_out,
