@@ -37,8 +37,7 @@ with col14.container(height=160):
     st.write("###### 損益(千円)")
     st.write("## %s" % currency_format(int(profit_amount/1000 + 0.5)))
 
-
-st.caption("金額は税込")
+st.caption("金額は税抜き")
 
 # st.write(df_sales_expense_leads_by_segment)
 
