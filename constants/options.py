@@ -144,3 +144,10 @@ scope_categories = (
     'Scope3-14 フランチャイズ',
     'Scope3-15 投資',
 )
+
+fixed_asset_obtained_types = (
+    '計画中',
+    '建仮',
+    '購入',
+    'リース',
+)
